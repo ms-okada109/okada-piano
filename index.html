@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>岡田音楽教室</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #8b5a8c;
+      --primary-dark: #6b3a6c;
+      --accent: #d4a0d5;
+      --bg: #fafafa;
+      --text: #333;
+      --text-light: #666;
+      --border: #e0e0e0;
+      --white: #fff;
+      --nav-h: 60px;
+    }
+    body {
+      font-family: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      font-size: 15px;
+      line-height: 1.8;
+    }
+    a { color: var(--primary); text-decoration: none; cursor: pointer; }
+    a:hover { text-decoration: underline; color: var(--primary-dark); }
+
+    /* ===== HEADER ===== */
+    header {
+      background: var(--white);
+      border-bottom: 3px solid var(--primary);
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 6px rgba(0,0,0,.08);
+    }
+    .header-inner {
+      max-width: 1100px; margin: 0 auto;
+      padding: 0 20px; height: var(--nav-h);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .site-logo {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1.35rem; font-weight: 700;
+      color: var(--primary-dark); letter-spacing: .05em;
+    }
+    .site-logo:hover { text-decoration: none; }
+
+    /* ===== NAV ===== */
+    nav ul { list-style: none; display: flex; gap: 4px; }
+    nav > ul > li { position: relative; }
+    nav > ul > li > a, nav > ul > li > span {
+      display: flex; align-items: center; gap: 4px;
+      padding: 8px 14px; font-size: .88rem; font-weight: 500;
+      color: var(--text); cursor: pointer; border-radius: 4px;
+      transition: background .15s, color .15s; white-space: nowrap;
+      user-select: none;
+    }
+    nav > ul > li > a:hover,
+    nav > ul > li > span:hover,
+    nav > ul > li:hover > a,
+    nav > ul > li:hover > span {
+      background: var(--primary); color: var(--white); text-decoration: none;
+    }
+    .dropdown-menu {
+      display: none; position: absolute; top: 100%; left: 0;
+      background: var(--white); border: 1px solid var(--border);
+      border-top: 3px solid var(--primary); min-width: 180px;
+      box-shadow: 0 4px 12px rgba(0,0,0,.12);
+      border-radius: 0 0 6px 6px; z-index: 200;
+    }
+    nav > ul > li:hover .dropdown-menu { display: block; }
+    .dropdown-menu li a {
+      display: block; padding: 9px 16px; font-size: .85rem;
+      color: var(--text); border-bottom: 1px solid var(--border);
+      transition: background .12s, color .12s;
+    }
+    .dropdown-menu li:last-child a { border-bottom: none; }
+    .dropdown-menu li a:hover { background: var(--accent); color: var(--primary-dark); text-decoration: none; }
+    .arrow { font-size: .7rem; }
+
+    .hamburger {
+      display: none; background: none; border: none; cursor: pointer;
+      flex-direction: column; gap: 5px; padding: 6px;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--primary-dark); border-radius: 2px; transition: .3s;
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      position: relative; overflow: hidden;
+      background: linear-gradient(135deg, #f3e8f4 0%, #e8d5e8 50%, #f5eef5 100%);
+      height: 380px; display: flex; align-items: center; justify-content: center;
+    }
+    .hero-slide {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 1s ease;
+    }
+    .hero-slide.active { opacity: 1; }
+    .hero-text { text-align: center; padding: 40px; }
+    .hero-text h2 {
+      font-family: 'Noto Serif JP', serif; font-size: 1.9rem;
+      color: var(--primary-dark); margin-bottom: 12px; letter-spacing: .1em;
+    }
+    .hero-text p { font-size: 1rem; color: var(--text-light); }
+    .hero-dots {
+      position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 8px;
+    }
+    .hero-dot {
+      width: 10px; height: 10px; border-radius: 50%; background: var(--accent);
+      cursor: pointer; border: none; transition: background .2s;
+    }
+    .hero-dot.active { background: var(--primary-dark); }
+
+    /* ===== PAGE HEADER ===== */
+    .page-header {
+      background: linear-gradient(135deg, #f3e8f4, #ede0ee);
+      border-bottom: 3px solid var(--primary); padding: 32px 20px;
+    }
+    .page-header h1 {
+      max-width: 1100px; margin: 0 auto;
+      font-family: 'Noto Serif JP', serif; font-size: 1.6rem;
+      color: var(--primary-dark); border-left: 4px solid var(--primary); padding-left: 16px;
+    }
+
+    /* ===== LAYOUT ===== */
+    .main-layout {
+      display: grid; grid-template-columns: 1fr 280px;
+      gap: 40px; padding: 40px 20px;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .main-content section { margin-bottom: 44px; }
+    h2.section-title {
+      font-family: 'Noto Serif JP', serif; font-size: 1.3rem;
+      color: var(--primary-dark); border-left: 4px solid var(--primary);
+      padding-left: 12px; margin-bottom: 18px;
+    }
+    .clearfix::after { content: ''; display: block; clear: both; }
+
+    /* ===== PAGE CONTENT ===== */
+    .page-content h2 {
+      font-family: 'Noto Serif JP', serif; font-size: 1.2rem;
+      color: var(--primary-dark); border-bottom: 2px solid var(--accent);
+      padding-bottom: 6px; margin: 28px 0 14px;
+    }
+    .page-content h2:first-child { margin-top: 0; }
+    .page-content h3 { font-size: 1rem; color: var(--primary); margin: 20px 0 8px; font-weight: 700; }
+    .page-content p { margin-bottom: 12px; }
+    .concours-text {
+      background: #fdf6fe; border: 1px solid var(--accent);
+      border-radius: 8px; padding: 20px 24px;
+    }
+    .achievement-list { padding-left: 20px; }
+    .achievement-list li { margin-bottom: 10px; font-size: .9rem; line-height: 1.7; }
+    .greeting-photo {
+      float: right; margin: 0 0 16px 20px; width: 220px;
+      border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,.12);
+    }
+    .profile-photo {
+      float: left; width: 180px; border-radius: 6px;
+      margin: 0 20px 16px 0; box-shadow: 0 2px 8px rgba(0,0,0,.12);
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar { display: flex; flex-direction: column; gap: 28px; }
+    .widget { background: var(--white); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .widget-title {
+      background: var(--primary); color: var(--white);
+      font-size: .9rem; font-weight: 700; padding: 10px 16px; letter-spacing: .04em;
+    }
+    .widget-body { padding: 14px 16px; }
+    .cta-area { display: flex; flex-direction: column; gap: 12px; padding: 16px; }
+    .btn-cta {
+      display: block; text-align: center; padding: 13px 16px;
+      border-radius: 6px; font-size: .9rem; font-weight: 700;
+      transition: opacity .15s, transform .1s; cursor: pointer;
+    }
+    .btn-cta:hover { opacity: .85; transform: translateY(-1px); text-decoration: none; }
+    .btn-cta.primary { background: var(--primary); color: var(--white); }
+    .btn-cta.outline { background: var(--white); color: var(--primary-dark); border: 2px solid var(--primary); }
+
+    .sidebar-nav { list-style: none; }
+    .sidebar-nav li { border-bottom: 1px solid var(--border); }
+    .sidebar-nav li:last-child { border-bottom: none; }
+    .sidebar-nav li a {
+      display: block; padding: 9px 14px; font-size: .85rem; color: var(--text);
+      transition: background .12s, color .12s;
+    }
+    .sidebar-nav li a:hover, .sidebar-nav li a.active {
+      background: var(--accent); color: var(--primary-dark); text-decoration: none;
+    }
+    .sidebar-nav li a.active { font-weight: 700; }
+
+    .calendar { width: 100%; border-collapse: collapse; font-size: .82rem; }
+    .calendar caption { font-weight: 700; margin-bottom: 8px; color: var(--primary-dark); font-size: .88rem; }
+    .calendar th { text-align: center; padding: 5px 2px; color: var(--text-light); font-weight: 500; }
+    .calendar td { text-align: center; padding: 5px 2px; font-size: .8rem; }
+    .calendar td a {
+      display: inline-block; width: 24px; height: 24px; border-radius: 50%;
+      background: var(--primary); color: var(--white); line-height: 24px; font-size: .8rem;
+    }
+    .calendar td a:hover { background: var(--primary-dark); }
+    .calendar-nav { display: flex; justify-content: space-between; font-size: .8rem; margin-top: 8px; }
+
+    .recent-posts { list-style: none; }
+    .recent-posts li { padding: 10px 0; border-bottom: 1px solid var(--border); font-size: .85rem; line-height: 1.5; }
+    .recent-posts li:last-child { border-bottom: none; }
+    .recent-posts .post-date { display: block; font-size: .75rem; color: var(--text-light); margin-top: 3px; }
+
+    .news-list { background: var(--white); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .news-list li { list-style: none; padding: 12px 18px; border-bottom: 1px solid var(--border); font-size: .9rem; }
+    .news-list li:last-child { border-bottom: none; }
+    .news-list li::before { content: '▶'; font-size: .65rem; color: var(--primary); margin-right: 8px; }
+
+    /* ===== COURSE CARDS ===== */
+    .course-cards {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px; margin: 20px 0;
+    }
+    .course-card {
+      background: var(--white); border: 1px solid var(--border); border-radius: 10px;
+      padding: 20px; text-align: center; transition: box-shadow .2s, transform .2s;
+    }
+    .course-card:hover { box-shadow: 0 4px 16px rgba(139,90,140,.15); transform: translateY(-2px); }
+    .course-card .icon { font-size: 2.2rem; margin-bottom: 10px; }
+    .course-card h3 { font-size: 1rem; color: var(--primary-dark); margin-bottom: 6px; }
+    .course-card p { font-size: .85rem; color: var(--text-light); }
+
+    /* ===== TABLE ===== */
+    .lesson-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: .9rem; }
+    .lesson-table th {
+      background: var(--primary); color: var(--white);
+      padding: 10px 14px; text-align: left; font-weight: 500;
+    }
+    .lesson-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+    .lesson-table tr:last-child td { border-bottom: none; }
+    .lesson-table tr:nth-child(even) td { background: #f9f3fa; }
+
+    /* ===== VOICE CARDS ===== */
+    .voice-cards { display: flex; flex-direction: column; gap: 16px; }
+    .voice-card {
+      background: var(--white); border-left: 4px solid var(--accent);
+      border-radius: 0 8px 8px 0; padding: 16px 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    }
+    .voice-card .voice-meta { font-size: .8rem; color: var(--text-light); margin-bottom: 6px; }
+    .voice-card p { font-size: .9rem; }
+
+    /* ===== BLOG ===== */
+    .blog-list { display: flex; flex-direction: column; gap: 16px; }
+    .blog-item {
+      background: var(--white); border: 1px solid var(--border); border-radius: 8px;
+      padding: 16px 20px; transition: box-shadow .2s;
+    }
+    .blog-item:hover { box-shadow: 0 2px 10px rgba(139,90,140,.12); }
+    .blog-item .date { font-size: .78rem; color: var(--text-light); margin-bottom: 4px; }
+    .blog-item h3 { font-size: 1rem; color: var(--primary-dark); margin-bottom: 6px; }
+    .blog-item p { font-size: .87rem; color: var(--text-light); }
+
+    /* ===== EXPERIENCE FORM ===== */
+    .form-section { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 28px; }
+    .form-row { margin-bottom: 18px; }
+    .form-row label { display: block; font-size: .88rem; font-weight: 700; margin-bottom: 6px; color: var(--primary-dark); }
+    .form-row input, .form-row select, .form-row textarea {
+      width: 100%; padding: 10px 14px; border: 1px solid var(--border);
+      border-radius: 6px; font-size: .9rem; font-family: inherit;
+      transition: border-color .15s;
+    }
+    .form-row input:focus, .form-row select:focus, .form-row textarea:focus {
+      outline: none; border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(139,90,140,.1);
+    }
+    .form-submit {
+      background: var(--primary); color: var(--white);
+      border: none; padding: 14px 40px; font-size: 1rem; font-weight: 700;
+      border-radius: 6px; cursor: pointer; transition: background .15s;
+    }
+    .form-submit:hover { background: var(--primary-dark); }
+
+    /* ===== MAP PLACEHOLDER ===== */
+    .map-placeholder {
+      background: #eee; border-radius: 8px; height: 300px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-light); font-size: .9rem; border: 1px solid var(--border);
+    }
+
+    /* ===== PAPAMAMA ===== */
+    .papamama-box {
+      background: linear-gradient(135deg, #fdf6fe, #f5eaf6);
+      border: 1px solid var(--accent); border-radius: 10px; padding: 28px;
+      text-align: center; margin-bottom: 24px;
+    }
+    .papamama-box .big-icon { font-size: 3rem; margin-bottom: 12px; }
+    .papamama-box h3 { font-family: 'Noto Serif JP', serif; font-size: 1.2rem; color: var(--primary-dark); margin-bottom: 10px; }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: var(--primary-dark); color: rgba(255,255,255,.85);
+      text-align: center; padding: 28px 20px; font-size: .82rem; margin-top: 60px;
+    }
+
+    /* ===== PAGE VISIBILITY ===== */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .main-layout { grid-template-columns: 1fr; padding: 24px 16px; }
+      .hamburger { display: flex; }
+      nav {
+        display: none; position: absolute;
+        top: var(--nav-h); left: 0; right: 0;
+        background: var(--white); border-top: 2px solid var(--primary);
+        box-shadow: 0 4px 12px rgba(0,0,0,.1); padding: 8px 0;
+      }
+      nav.open { display: block; }
+      nav ul { flex-direction: column; gap: 0; }
+      nav > ul > li > a, nav > ul > li > span { border-radius: 0; padding: 12px 20px; }
+      .dropdown-menu {
+        position: static; border-top: none; border-left: 3px solid var(--accent);
+        margin-left: 20px; box-shadow: none; display: none;
+      }
+      nav > ul > li.open .dropdown-menu { display: block; }
+      .hero { height: 240px; }
+      .hero-text h2 { font-size: 1.3rem; }
+      .greeting-photo { width: 140px; }
+      .profile-photo { width: 130px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header>
+  <div class="header-inner">
+    <span class="site-logo" onclick="showPage('home')">岡田音楽教室</span>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    <nav id="main-nav">
+      <ul>
+        <li><a onclick="showPage('home')">ホーム</a></li>
+        <li>
+          <span>教室案内 <span class="arrow">▾</span></span>
+          <ul class="dropdown-menu">
+            <li><a onclick="showPage('credo')">教室理念・方針</a></li>
+            <li><a onclick="showPage('profile')">プロフィール</a></li>
+            <li><a onclick="showPage('piano')">ピアノコース</a></li>
+            <li><a onclick="showPage('rhythmics')">リトミックコース</a></li>
+            <li><a onclick="showPage('voice')">声楽コース</a></li>
+            <li><a onclick="showPage('place')">レッスン場所</a></li>
+            <li><a onclick="showPage('reviews')">生徒の声</a></li>
+            <li><a onclick="showPage('study')">学習塾</a></li>
+          </ul>
+        </li>
+        <li><a onclick="showPage('papamama')">パパママ会</a></li>
+        <li><a onclick="showPage('experience')">体験レッスン</a></li>
+        <li><a onclick="showPage('blog')">ブログ</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- ===================== HOME ===================== -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-slide active">
+      <div class="hero-text">
+        <h2>生徒の個性を最大限に引き出します</h2>
+        <p>ピアノを好きでいてくれるように。人前でも自信を持って弾けるように。</p>
+      </div>
+    </div>
+    <div class="hero-slide">
+      <div class="hero-text">
+        <h2>幼児から大人まで、ようこそ岡田音楽教室へ</h2>
+        <p>ピアノコース・リトミックコース・声楽コースをご用意しています。</p>
+      </div>
+    </div>
+    <div class="hero-slide">
+      <div class="hero-text">
+        <h2>コンクール入賞者続々輩出</h2>
+        <p>ピティナ、ショパンコンクールin ASIA など全国大会での実績多数。</p>
+      </div>
+    </div>
+    <div class="hero-dots">
+      <button class="hero-dot active" data-idx="0"></button>
+      <button class="hero-dot" data-idx="1"></button>
+      <button class="hero-dot" data-idx="2"></button>
+    </div>
+  </div>
+
+  <div class="main-layout">
+    <main class="main-content">
+      <section>
+        <h2 class="section-title">ごあいさつ</h2>
+        <p>「生徒の持つ個性を最大限に引き出すこと」をモットーにレッスンしています。<br>
+        ピアノを好きでいてくれる様に。また、人前でも自信を持って弾ける様に。<br>
+        単なるピアノ指導にとどまることなく、生徒とのコミュニケーションを大切にしながら指導してまいります。</p>
+      </section>
+      <section>
+        <h2 class="section-title">コンクール</h2>
+        <div class="concours-text">
+          <p>表彰状やトロフィーをもらいたい！と、具体的な目標を持って努力する間に、不思議な位、実力や自信がつきます。またコンクールは、自分の実力を測り、自分の良いところや改善点を知る絶好のチャンスでもあります。自分の表現力を磨く場として、コンクールを利用してみてはいかがでしょうか。</p>
+          <p style="margin-top:10px">それぞれのコンクールに出るからには、自信につながる結果になるよう、生徒達と一緒に、テクニックや、豊かな音楽性を表現出来る様に、コツコツ積み重ねてレッスンしています。幼児から大人の方まで受け付けておりますので、ぜひお問い合わせください。</p>
+          <p style="margin-top:10px">また、音大、音高受験生には楽典、調音、ソルフェージュのレッスンも受け付けております。</p>
+        </div>
+      </section>
+      <section>
+        <h2 class="section-title">スクールニュース</h2>
+        <h3 style="margin-bottom:10px; color:var(--primary-dark); font-family:'Noto Serif JP',serif;">2022年 門下生の進学先</h3>
+        <ul class="news-list">
+          <li>京都市立芸術大学ピアノ科 1名</li>
+          <li>沖縄県立芸術大学ピアノ科 1名</li>
+          <li>県立西宮高校音楽科 2名</li>
+        </ul>
+      </section>
+    </main>
+    <aside class="sidebar">
+      <div class="widget">
+        <div class="cta-area">
+          <a onclick="showPage('experience')" class="btn-cta primary">🎹 体験レッスンお申込み</a>
+          <a onclick="showPage('papamama')" class="btn-cta outline">👨‍👩‍👧 パパママ会</a>
+        </div>
+      </div>
+      <div class="widget">
+        <div class="widget-title">ブログカレンダー</div>
+        <div class="widget-body">
+          <table class="calendar">
+            <caption>2026年3月</caption>
+            <thead><tr><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th><th>日</th></tr></thead>
+            <tbody>
+              <tr><td></td><td></td><td></td><td></td><td></td><td></td><td>1</td></tr>
+              <tr><td>2</td><td>3</td><td>4</td><td><a onclick="showPage('blog')">5</a></td><td>6</td><td>7</td><td>8</td></tr>
+              <tr><td>9</td><td><a onclick="showPage('blog')">10</a></td><td>11</td><td>12</td><td>13</td><td>14</td><td>15</td></tr>
+              <tr><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td></tr>
+              <tr><td>23</td><td>24</td><td>25</td><td>26</td><td>27</td><td>28</td><td>29</td></tr>
+              <tr><td>30</td><td>31</td><td></td><td></td><td></td><td></td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="widget">
+        <div class="widget-title">最近の投稿</div>
+        <div class="widget-body">
+          <ul class="recent-posts">
+            <li><a onclick="showPage('blog')">兵庫県中学校作曲コンクール入賞しました！</a><span class="post-date">2026年3月10日</span></li>
+            <li><a onclick="showPage('blog')">生徒が、県立西宮高校音楽科に合格しました！</a><span class="post-date">2026年3月5日</span></li>
+            <li><a onclick="showPage('blog')">ショパンコンクールインアジア大会で入賞おめでとうございます。</a><span class="post-date">2026年1月28日</span></li>
+            <li><a onclick="showPage('blog')">岡田音楽教室の生徒が、学年1位になり大学のコンチェルトのソリストに選ばれました！</a><span class="post-date">2026年1月15日</span></li>
+            <li><a onclick="showPage('blog')">バスティンコンクール金賞受賞おめでとうございます!</a><span class="post-date">2025年12月22日</span></li>
+          </ul>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- ===================== 教室理念 ===================== -->
+<div id="page-credo" class="page">
+  <div class="page-header"><h1>教室理念・方針</h1></div>
+  <div class="main-layout">
+    <main class="main-content page-content">
+      <h2>教室理念</h2>
+      <p><strong>音楽を一生の友としていけるように生徒を育てます</strong></p>
+      <p>どんな御子様も、笑顔一杯のリトルピニストになれる素質をお持ちです！<br>
+      譜読みやリズムの訓練と共に、ステージで演奏するからこそ培われる表現力があります。<br>
+      幼児の頃からしっかりした構成力のある演奏をする事で、聴き手に感動を与える演奏が出来る様に指導しています。</p>
+      <p>コンクールに出ても予選落ちてばかりで…。という生徒様も、岡田音楽教室に入門されてからどんどん上達し、芸高や芸大に進まれた方もいらっしゃいます。お一人お一人の個性や希望を随時お聞きし、一緒に相談しながら、常にその時々の最善の方法でレッスンいたします。</p>
+      <p>私の息子は東京大学に進学し、立派な社会人として巣立ちました。幼児期に勉強させるよりもまず、生まれて直ぐに歌を歌って聴かせたり、ピアノの音を聴かせたりすることに重きをおいてきました。3歳よりピアノレッスンも始め、コンクールにも毎年参加してきました。振り返ってみると、幼少期のリトミックやピアノが集中力や自制心を育むことができ、東大進学に至ったと思います。この経験を、当教室で習う生徒様に活かしていけたらと思います。</p>
+      <p style="text-align:right; font-weight:700; color:var(--primary-dark);">岡田音楽教室代表　岡田裕子</p>
+
+      <h2>レッスン方針</h2>
+      <h3>生徒様ひとりひとりの個性を伸ばします</h3>
+      <p>生徒様ひとりひとりはそれぞれ素晴らしい音楽的個性をお持ちです。その個性を引き出し、表現豊かな演奏となるようにレッスンいたします。</p>
+      <h3>生徒様ひとりひとりの音楽的楽しみを尊重します</h3>
+      <p>音楽の楽しみ方は様々です。憧れの曲を上手に弾けるようになりたい。もっと感情豊かに弾けるようになりたい。想い通りに弾けた実感したときは、例えようのない幸せな気分になりますね。岡田音楽教室では生徒様ひとりひとりの音楽的楽しみを尊重し、想いが叶うようにレッスンいたします。</p>
+      <h3>生徒様ひとりひとりの演奏技術を高めます</h3>
+      <p>生徒様ひとりひとりの年齢や演奏レベルに合わせて、最適なレッスン方法を適用いたします。</p>
+      <h3>ピアノと学業の両立を図ります</h3>
+      <p>ご希望の方にはピアノだけではなく、当教室併設の学研教室にもご案内しております。幼児から高校受験生まで幅広く対応しておりますので、ぜひご検討ください。</p>
+    </main>
+    <aside class="sidebar">
+      <div class="widget"><div class="cta-area">
+        <a onclick="showPage('experience')" class="btn-cta primary">🎹 体験レッスンお申込み</a>
+        <a onclick="showPage('papamama')" class="btn-cta outline">👨‍👩‍👧 パパママ会</a>
+      </div></div>
+      <div class="widget">
+        <div class="widget-title">教室案内</div>
+        <ul class="sidebar-nav">
+          <li><a onclick="showPage('credo')" id="nav-credo">教室理念・方針</a></li>
+          <li><a onclick="showPage('profile')">プロフィール</a></li>
+          <li><a onclick="showPage('piano')">ピアノコース</a></li>
+          <li><a onclick="showPage('rhythmics')">リトミックコース</a></li>
+          <li><a onclick="showPage('voice')">声楽コース</a></li>
+          <li><a onclick="showPage('place')">レッスン場所</a></li>
+          <li><a onclick="showPage('reviews')">生徒の声</a></li>
+          <li><a onclick="showPage('study')">学習塾</a></li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- ===================== プロフィール ===================== -->
+<div id="page-profile" class="page">
+  <div class="page-header"><h1>プロフィール</h1></div>
+  <div class="main-layout">
+    <main class="main-content page-content">
+      <h2>岡田 裕子（Hiroko Okada）</h2>
+      <h3>経歴</h3>
+      <ul class="achievement-list">
+        <li>神戸女学院大学音楽学部卒業</li>
+        <li>神戸西南ステーション代表</li>
+        <li>ピティナコンペティション全国大会審査員、ステップアドバイザー</li>
+        <li>ショパン国際ピアノコンクール in ASIA 審査員</li>
+        <li>クラシックコンクール審査員</li>
+      </ul>
+      <h3 style="margin-top:24px">指導実績</h3>
+      <ul class="achievement-list">
+        <li>ピティナピアノコンペティション — A2級全国大会優秀賞、A1級全国大会銅賞・ベスト賞、B級全国大会金・銀・銅賞、C級全国大会ベスト賞、D級全国大会銅賞、F級全国大会入選、グランミューズYB級全国大会1位</li>
+        <li>兵庫県学生ピアノコンクール — B級・中学生・高校生部門で最優秀賞、優秀賞、兵庫県知事賞、NHK神戸放送局長賞等受賞</li>
+        <li>ショパンコンクール in ASIA アジア大会金賞</li>
+        <li>長江杯国際音楽コンクール中学生の部第1位及び審査員特別賞</li>
+        <li>グレンツェンピアノコンクール金賞・銀賞・銅賞</li>
+        <li>全日本アールンピアノコンペティション全国大会金賞・銀賞</li>
+        <li>イモラ国際ピアノオーディションin JAPAN 東京本選中学生の部第2位、イタリアイモラサマーフェスティバル参加</li>
+        <li>バッハコンクール全国大会金賞受賞</li>
+        <li>青山音楽財団奨学生受賞</li>
+        <li>全日本学生音楽コンクール高校生の部本選入選</li>
+        <li>東京藝術大学付属高校、県立西宮高校音楽科、私立山手女子高校音楽科、大阪教育大学、相愛大学音楽科、神戸女学院大学音楽科、県立沖縄芸術大学、頌栄短期大学保育科 合格</li>
+      </ul>
+    </main>
+    <aside class="sidebar">
+      <div class="widget"><div class="cta-area">
+        <a onclick="showPage('experience')" class="btn-cta primary">🎹 体験レッスンお申込み</a>
+        <a onclick="showPage('papamama')" class="btn-cta outline">👨‍👩‍👧 パパママ会</a>
+      </div></div>
+      <div class="widget"><div class="widget-title">教室案内</div>
+        <ul class="sidebar-nav">
+          <li><a onclick="showPage('credo')">教室理念・方針</a></li>
+          <li><a onclick="showPage('profile')">プロフィール</a></li>
+          <li><a onclick="showPage('piano')">ピアノコース</a></li>
+          <li><a onclick="showPage('rhythmics')">リトミックコース</a></li>
+          <li><a onclick="showPage('voice')">声楽コース</a></li>
+          <li><a onclick="showPage('place')">レッスン場所</a></li>
+          <li><a onclick="showPage('reviews')">生徒の声</a></li>
+          <li><a onclick="showPage('study')">学習塾</a></li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- ===================== ピアノコース ===================== -->
+<div id="page-piano" class="page">
+  <div class="page-header"><h1>ピアノコース</h1></div>
+  <div class="main-layout">
+    <main class="main-content page-content">
+      <h2>ピアノコースのご案内</h2>
+      <p>幼児から大人の方まで、初心者から上級者まで幅広く対応しております。お一人お一人の目標や個性に合わせたカリキュラムで丁寧に指導いたします。</p>
+      <h3>レッスン内容</h3>
+      <p>基礎テクニック・音楽理論・ソルフェージュ・曲の解釈・表現力の向上を総合的に指導します。コンクール出場や音大受験を目指す方への専門的なサポートも行っております。</p>
+      <h3>料金（月謝）</h3>
+      <table class="lesson-table">
+        <thead><tr><th>コース</th><th>時間</th><th>月謝</th></tr></thead>
+        <tbody>
+          <tr><td>幼児・小学生（初級）</td><td>30分/回</td><td>お問い合わせください</td></tr>
+          <tr><td>小学生（中・上級）</td><td>45分/回</td><td>お問い合わせください</td></tr>
+          <tr><td>中学生・高校生</td><td>60分/回</td><td>お問い合わせください</td></tr>
+          <tr><td>大人</td><td>60分/回</td><td>お問い合わせください</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:.85rem; color:var(--text-light);">※入会金・テキスト代別途。詳細はお問い合わせください。</p>
+    </main>
+    <aside class="sidebar">
+      <div class="widget"><div class="cta-area">
+        <a onclick="showPage('experience')" class="btn-cta primary">🎹 体験レッスンお申込み</a>
+      </div></div>
+      <div class="widget"><div class="widget-title">教室案内</div>
+        <ul class="sidebar-nav">
+          <li><a onclick="showPage('credo')">教室理念・方針</a></li>
+          <li><a onclick="showPage('profile')">プロフィール</a></li>
+          <li><a onclick="showPage('piano')">ピアノコース</a></li>
+          <li><a onclick="showPage('rhythmics')">リトミックコース</a></li>
+          <li><a onclick="showPage('voice')">声楽コース</a></li>
+          <li><a onclick="showPage('place')">レッスン場所</a></li>
+          <li><a onclick="showPage('reviews')">生徒の声</a></li>
+          <li><a onclick="showPage('study')">学習塾</a></li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- ===================== リトミック ===================== -->
+<div id="page-rhythmics" class="page">
+  <div class="page-header"><h1>リトミックコース</h1></div>
+  <div class="main-layout">
+    <main class="main-content page-content">
+      <h2>リトミックコースのご案内</h2>
+      <p>リトミックは、スイスの音楽教育家エミール・ジャック＝ダルクローズが考案した音楽教育法です。音楽に合わせて体を動かすことで、音楽的感受性・リズム感・集中力・表現力を育みます。</p>
+      <h3>対象年齢</h3>
+      <p>0歳〜就学前のお子様を対象としています。親子での参加も歓迎です。音楽との最初の出会いを楽しく豊かなものにしてあげましょう。</p>
+      <h3>レッスン内容</h3>
+      <ul class="achievement-list">
+        <li>音楽に合わせた身体表現・リズム遊び</li>
+        <li>音の高低・強弱・速さの聴き分け</li>
+        <li>歌唱・楽器体験</li>
+        <li>音楽的想像力と創造性の開発</li>
+      </ul>
+    </main>
+    <aside class="sidebar">
+      <div class="widget"><div class="cta-area">
+        <a onclick="showPage('experience')" class="btn-cta primary">🎹 体験レッスンお申込み</a>
+      </div></div>
+      <div class="widget"><div class="widget-title">教室案内</div>
+        <ul class="sidebar-nav">
+          <li><a onclick="showPage('credo')">教室理念・方針</a></li>
+          <li><a onclick="showPage('profile')">プロフィール</a></li>
+          <li><a onclick="showPage('piano')">ピアノコース</a></li>
+          <li><a onclick="showPage('rhythmics')">リトミックコース</a></li>
+          <li><a onclick="showPage('voice')">声楽コース</a></li>
+          <li><a onclick="showPage('place')">レッスン場所</a></li>
+          <li><a onclick="showPage('reviews')">生徒の声</a></li>
+          <li><a onclick="showPage('study')">学習塾</a></li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- ===================== 声楽 ===================== -->
+<div id="page-voice" class="page">
+  <div class="page-header"><h1>声楽コース</h1></div>
+  <div class="main-layout">
+    <main class="main-content page-content">
+      <h2>声楽コースのご案内</h2>
+      <p>正しい発声法の習得から、ドイツ歌曲・イタリア歌曲・日本歌曲・オペラアリアまで、幅広いレパートリーに対応します。音大・音高受験対策も行っております。</p>
+      <h3>対象</h3>
+      <p>中学生以上の方。初心者の方から音大受験を目指す方まで歓迎します。</p>
+      <h3>レッスン内容</h3>
+      <ul class="achievement-list">
+        <li>発声・呼吸法の基礎訓練</li>
+        <li>ドイツ・イタリア・日本語の発音指導</li>
+        <li>楽曲の解釈と表現</li>
+        <li>ソルフェージュ・音楽理論</li>
+      </ul>
+    </main>
+    <aside class="sidebar">
+      <div class="widget"><div class="cta-area">
+        <a onclick="showPage('experience')" class="btn-cta primary">🎹 体験レッスンお申込み</a>
+      </div></div>
+      <div class="widget"><div class="widget-title">教室案内</div>
+        <ul class="sidebar-nav">
+          <li><a onclick="showPage('credo')">教室理念・方針</a></li>
+          <li><a onclick="showPage('profile')">プロフィール</a></li>
+          <li><a onclick="showPage('piano')">ピアノコース</a></li>
+          <li><a onclick="showPage('rhythmics')">リトミックコース</a></li>
+          <li><a onclick="showPage('voice')">声楽コース</a></li>
+          <li><a onclick="showPage('place')">レッスン場所</a></li>
+          <li><a onclick="showPage('reviews')">生徒の声</a></li>
+          <li><a onclick="showPage('study')">学習塾</a></li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- ===================== レッスン場所 ===================== -->
+<div id="page-place" class="page">
+  <div class="page-header"><h1>レッスン場所</h1></div>
+  <div class="main-layout">
+    <main class="main-content page-content">
+      <h2>教室所在地</h2>
+      <p>〒651-2271<br>兵庫県神戸市西区（詳細はお問い合わせください）</p>
+      <div class="map-placeholder">📍 地図はこちらに埋め込み予定<br><small>Google Maps の iframe を貼り付けてください</small></div>
+      <h3 style="margin-top:24px">アクセス</h3>
+      <ul class="achievement-list">
+        <li>お車でお越しの方：駐車場あり</li>
+        <li>公共交通機関でお越しの方：詳細はお問い合わせください</li>
+      </ul>
+      <h3>レッスン時間帯</h3>
+      <table class="lesson-table">
+        <thead><tr><th>曜日</th><th>時間</th></tr></thead>
+        <tbody>
+          <tr><td>月〜金</td><td>14:00 〜 21:00</td></tr>
+          <tr><td>土</td><td>10:00 〜 18:00</td></tr>
+          <tr><td>日・祝</td><td>応相談</td></tr>
+        </tbody>
+      </table>
+    </main>
+    <aside class="sidebar">
+      <div class="widget"><div class="cta-area">
+        <a onclick="showPage('experience')" class="btn-cta primary">🎹 体験レッスンお申込み</a>
+      </div></div>
+      <div class="widget"><div class="widget-title">教室案内</div>
+        <ul class="sidebar-nav">
+          <li><a onclick="showPage('credo')">教室理念・方針</a></li>
+          <li><a onclick="showPage('profile')">プロフィール</a></li>
+          <li><a onclick="showPage('piano')">ピアノコース</a></li>
+          <li><a onclick="showPage('rhythmics')">リトミックコース</a></li>
+          <li><a onclick="showPage('voice')">声楽コース</a></li>
+          <li><a onclick="showPage('place')">レッスン場所</a></li>
+          <li><a onclick="showPage('reviews')">生徒の声</a></li>
+          <li><a onclick="showPage('study')">学習塾</a></li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- ===================== 生徒の声 ===================== -->
+<div id="page-reviews" class="page">
+  <div class="page-header"><h1>生徒の声</h1></div>
+  <div class="main-layout">
+    <main class="main-content page-content">
+      <h2>生徒・保護者の声</h2>
+      <div class="voice-cards">
+        <div class="voice-card">
+          <div class="voice-meta">小学3年生 保護者様</div>
+          <p>入会前はピアノを怖がっていた子が、今では毎日自分から練習するようになりました。先生の指導はとても温かく、子どもの個性を引き出してくださっています。</p>
+        </div>
+        <div class="voice-card">
+          <div class="voice-meta">中学2年生 保護者様</div>
+          <p>コンクールで初めて賞をいただいた時、子どもが泣いて喜んでいました。先生が一緒に頑張ってくださったおかげです。</p>
+        </div>
+        <div class="voice-card">
+          <div class="voice-meta">高校3年生（音大受験生）</div>
+          <p>他の教室では通らなかった音大に合格できました。先生の的確なご指導と励ましが自信につながりました。</p>
+        </div>
+        <div class="voice-card">
+          <div class="voice-meta">大人の生徒様</div>
+          <p>社会人になってから始めましたが、先生が丁寧に教えてくださるので少しずつ弾けるようになってきました。音楽が生活の潤いになっています。</p>
+        </div>
+      </div>
+    </main>
+    <aside class="sidebar">
+      <div class="widget"><div class="cta-area">
+        <a onclick="showPage('experience')" class="btn-cta primary">🎹 体験レッスンお申込み</a>
+      </div></div>
+      <div class="widget"><div class="widget-title">教室案内</div>
+        <ul class="sidebar-nav">
+          <li><a onclick="showPage('credo')">教室理念・方針</a></li>
+          <li><a onclick="showPage('profile')">プロフィール</a></li>
+          <li><a onclick="showPage('piano')">ピアノコース</a></li>
+          <li><a onclick="showPage('rhythmics')">リトミックコース</a></li>
+          <li><a onclick="showPage('voice')">声楽コース</a></li>
+          <li><a onclick="showPage('place')">レッスン場所</a></li>
+          <li><a onclick="showPage('reviews')">生徒の声</a></li>
+          <li><a onclick="showPage('study')">学習塾</a></li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- ===================== 学習塾 ===================== -->
+<div id="page-study" class="page">
+  <div class="page-header"><h1>学習塾（学研教室）</h1></div>
+  <div class="main-layout">
+    <main class="main-content page-content">
+      <h2>ピアノと学業の両立を</h2>
+      <p>岡田音楽教室では、ピアノ教室に併設して学研教室を運営しております。ピアノと学業の両方に取り組みたいお子様をサポートします。</p>
+      <h3>対応科目・範囲</h3>
+      <ul class="achievement-list">
+        <li>国語・算数・数学・英語</li>
+        <li>幼児〜高校受験生まで対応</li>
+        <li>学校の授業の補習から受験対策まで</li>
+      </ul>
+      <h3>学研教室の特長</h3>
+      <p>一人ひとりの学習進度に合わせたオリジナルの教材を使用します。基礎学力の定着から応用力の育成まで、個別に対応いたします。</p>
+      <p>ピアノレッスンの日に学習塾のレッスンも合わせてご受講いただくことも可能ですので、送り迎えの負担も軽減できます。</p>
+    </main>
+    <aside class="sidebar">
+      <div class="widget"><div class="cta-area">
+        <a onclick="showPage('experience')" class="btn-cta primary">🎹 体験レッスンお申込み</a>
+      </div></div>
+      <div class="widget"><div class="widget-title">教室案内</div>
+        <ul class="sidebar-nav">
+          <li><a onclick="showPage('credo')">教室理念・方針</a></li>
+          <li><a onclick="showPage('profile')">プロフィール</a></li>
+          <li><a onclick="showPage('piano')">ピアノコース</a></li>
+          <li><a onclick="showPage('rhythmics')">リトミックコース</a></li>
+          <li><a onclick="showPage('voice')">声楽コース</a></li>
+          <li><a onclick="showPage('place')">レッスン場所</a></li>
+          <li><a onclick="showPage('reviews')">生徒の声</a></li>
+          <li><a onclick="showPage('study')">学習塾</a></li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- ===================== パパママ会 ===================== -->
+<div id="page-papamama" class="page">
+  <div class="page-header"><h1>パパママ会</h1></div>
+  <div class="main-layout">
+    <main class="main-content page-content">
+      <div class="papamama-box">
+        <div class="big-icon">👨‍👩‍👧‍👦</div>
+        <h3>保護者同士のつながりを大切に</h3>
+        <p>岡田音楽教室では、生徒の保護者様同士が交流できる「パパママ会」を定期的に開催しています。</p>
+      </div>
+      <h2>パパママ会について</h2>
+      <p>音楽教育に関する情報交換や、子育ての悩みを気軽に話し合える場としてご活用ください。先生を囲んでのティータイムなど、和やかな雰囲気で開催しています。</p>
+      <h3>開催内容（例）</h3>
+      <ul class="achievement-list">
+        <li>コンクール情報・受験対策に関する説明会</li>
+        <li>発表会の運営打ち合わせ</li>
+        <li>保護者同士の交流・懇親会</li>
+        <li>先生への個別相談コーナー</li>
+      </ul>
+      <p>次回の開催日程はブログにてお知らせします。</p>
+    </main>
+    <aside class="sidebar">
+      <div class="widget"><div class="cta-area">
+        <a onclick="showPage('experience')" class="btn-cta primary">🎹 体験レッスンお申込み</a>
+        <a onclick="showPage('blog')" class="btn-cta outline">📝 ブログを見る</a>
+      </div></div>
+    </aside>
+  </div>
+</div>
+
+<!-- ===================== 体験レッスン ===================== -->
+<div id="page-experience" class="page">
+  <div class="page-header"><h1>体験レッスン</h1></div>
+  <div class="main-layout">
+    <main class="main-content page-content">
+      <h2>体験レッスンのご案内</h2>
+      <p>岡田音楽教室では、随時体験レッスンを受け付けております。まずはお気軽にお越しください。入会を急かすようなことは一切ありませんので、ご安心ください。</p>
+      <h3>体験レッスンの流れ</h3>
+      <ul class="achievement-list">
+        <li>お申込みフォームまたはお電話でご予約</li>
+        <li>当日：教室見学 → 体験レッスン（約30分）</li>
+        <li>ご質問・ご相談（料金・スケジュールなど）</li>
+        <li>ご入会はご検討の上でOKです</li>
+      </ul>
+      <div class="form-section" style="margin-top:24px">
+        <h3 style="margin-top:0; margin-bottom:18px;">体験レッスン申込フォーム</h3>
+        <div class="form-row">
+          <label>お名前（保護者様）</label>
+          <input type="text" placeholder="例：岡田 花子">
+        </div>
+        <div class="form-row">
+          <label>お子様の名前・年齢</label>
+          <input type="text" placeholder="例：岡田 太郎・8歳">
+        </div>
+        <div class="form-row">
+          <label>ご希望コース</label>
+          <select>
+            <option>ピアノコース</option>
+            <option>リトミックコース</option>
+            <option>声楽コース</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>ご希望日時（第1希望）</label>
+          <input type="text" placeholder="例：平日 夕方ごろ">
+        </div>
+        <div class="form-row">
+          <label>連絡先メールアドレス</label>
+          <input type="email" placeholder="example@email.com">
+        </div>
+        <div class="form-row">
+          <label>ご質問・備考</label>
+          <textarea rows="4" placeholder="気になることがあればお気軽にどうぞ"></textarea>
+        </div>
+        <button class="form-submit" onclick="alert('送信機能は実装後に有効になります。\nメールにてお問い合わせください。')">送信する</button>
+      </div>
+    </main>
+    <aside class="sidebar">
+      <div class="widget"><div class="cta-area">
+        <a onclick="showPage('place')" class="btn-cta outline">📍 レッスン場所を見る</a>
+      </div></div>
+    </aside>
+  </div>
+</div>
+
+<!-- ===================== ブログ ===================== -->
+<div id="page-blog" class="page">
+  <div class="page-header"><h1>ブログ</h1></div>
+  <div class="main-layout">
+    <main class="main-content">
+      <div class="blog-list">
+        <div class="blog-item">
+          <div class="date">2026年3月10日</div>
+          <h3>兵庫県中学校作曲コンクール入賞しました！</h3>
+          <p>このたび、当教室の生徒が兵庫県中学校作曲コンクールにて入賞いたしました。日々のレッスンでの努力が実を結びました。おめでとうございます！</p>
+        </div>
+        <div class="blog-item">
+          <div class="date">2026年3月5日</div>
+          <h3>生徒が、県立西宮高校音楽科に合格しました！</h3>
+          <p>この春、当教室の生徒が県立西宮高校音楽科に見事合格しました。長年の努力の賜物です。高校でもさらに音楽の道を歩んでくれることを願っています。</p>
+        </div>
+        <div class="blog-item">
+          <div class="date">2026年1月28日</div>
+          <h3>ショパンコンクールインアジア大会で入賞おめでとうございます。</h3>
+          <p>ショパンコンクールin ASIAのアジア大会にて、当教室の生徒が入賞いたしました。アジアレベルの舞台での素晴らしい演奏でした。</p>
+        </div>
+        <div class="blog-item">
+          <div class="date">2026年1月15日</div>
+          <h3>岡田音楽教室の生徒が、学年1位になり大学のコンチェルトのソリストに選ばれました！</h3>
+          <p>大学で学年1位の成績を収め、コンチェルトのソリストに選ばれました。幼少期からのレッスンが大きな花を咲かせました。</p>
+        </div>
+        <div class="blog-item">
+          <div class="date">2025年12月22日</div>
+          <h3>バスティンコンクール金賞受賞おめでとうございます!</h3>
+          <p>バスティンコンクールにて金賞を受賞しました。クリスマス前の素晴らしいプレゼントになりましたね。おめでとうございます！</p>
+        </div>
+      </div>
+    </main>
+    <aside class="sidebar">
+      <div class="widget">
+        <div class="widget-title">ブログカレンダー</div>
+        <div class="widget-body">
+          <table class="calendar">
+            <caption>2026年3月</caption>
+            <thead><tr><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th><th>日</th></tr></thead>
+            <tbody>
+              <tr><td></td><td></td><td></td><td></td><td></td><td></td><td>1</td></tr>
+              <tr><td>2</td><td>3</td><td>4</td><td><a href="#">5</a></td><td>6</td><td>7</td><td>8</td></tr>
+              <tr><td>9</td><td><a href="#">10</a></td><td>11</td><td>12</td><td>13</td><td>14</td><td>15</td></tr>
+              <tr><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td></tr>
+              <tr><td>23</td><td>24</td><td>25</td><td>26</td><td>27</td><td>28</td><td>29</td></tr>
+              <tr><td>30</td><td>31</td><td></td><td></td><td></td><td></td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="widget">
+        <div class="widget-title">カテゴリー</div>
+        <div class="widget-body"><a href="#">お知らせ (389)</a></div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <p>Copyright© 2020 岡田音楽教室 All Rights Reserved.</p>
+</footer>
+
+<script>
+  // ===== PAGE NAVIGATION =====
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const target = document.getElementById('page-' + id);
+    if (target) {
+      target.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    // Close mobile nav
+    document.getElementById('main-nav').classList.remove('open');
+  }
+
+  // ===== HAMBURGER =====
+  document.getElementById('hamburger').addEventListener('click', () => {
+    document.getElementById('main-nav').classList.toggle('open');
+  });
+
+  // Mobile dropdown
+  document.querySelectorAll('nav > ul > li > span').forEach(span => {
+    span.addEventListener('click', () => {
+      if (window.innerWidth <= 768) {
+        span.parentElement.classList.toggle('open');
+      }
+    });
+  });
+
+  // ===== HERO SLIDER =====
+  const slides = document.querySelectorAll('.hero-slide');
+  const dots = document.querySelectorAll('.hero-dot');
+  let current = 0;
+  function goTo(idx) {
+    slides[current].classList.remove('active');
+    dots[current].classList.remove('active');
+    current = idx;
+    slides[current].classList.add('active');
+    dots[current].classList.add('active');
+  }
+  dots.forEach(dot => dot.addEventListener('click', () => goTo(+dot.dataset.idx)));
+  setInterval(() => goTo((current + 1) % slides.length), 4000);
+</script>
+</body>
+</html>
