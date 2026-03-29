@@ -3,578 +3,706 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>岡田音楽教室</title>
+  <title>岡田音楽教室 | Okada Music School</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Klee+One:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400;500&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --pink:    #FFB7C5;
-      --pink2:   #FF8FAB;
-      --pink-bg: #FFF0F3;
-      --yellow:  #FFE97A;
-      --yellow2: #FFD93D;
-      --mint:    #B5EAD7;
-      --mint2:   #78D5B8;
-      --lavender:#D4C5F9;
-      --lav2:    #A78BFA;
-      --cream:   #FFFDF5;
-      --text:    #5C4A56;
-      --text2:   #9B7E8C;
-      --white:   #FFFFFF;
-      --shadow:  0 4px 18px rgba(255,143,171,.18);
-      --shadow2: 0 2px 10px rgba(167,139,250,.15);
+      --bg:       #F8F6F2;
+      --bg2:      #F0EDE7;
+      --bg3:      #E8E3DC;
+      --dark:     #1C1815;
+      --dark2:    #2F2A26;
+      --text:     #2A2420;
+      --text2:    #7A6E68;
+      --text3:    #B0A49E;
+      --pink:     #B85C72;
+      --pink-lt:  #F0E0E5;
+      --pink-mid: #D49AAA;
+      --gold:     #A07840;
+      --gold-lt:  #F0E8D8;
+      --border:   rgba(42,36,32,.1);
+      --border2:  rgba(42,36,32,.18);
+      --white:    #FFFFFF;
+      --ease:     cubic-bezier(.25,.46,.45,.94);
     }
+
+    html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', sans-serif;
+      font-family: 'Noto Sans JP', sans-serif;
       color: var(--text);
-      background: var(--cream);
-      background-image:
-        radial-gradient(circle at 15% 20%, rgba(255,183,197,.12) 0%, transparent 35%),
-        radial-gradient(circle at 85% 70%, rgba(212,197,249,.12) 0%, transparent 35%),
-        radial-gradient(circle at 50% 50%, rgba(181,234,215,.08) 0%, transparent 50%);
-      font-size: 15px;
-      line-height: 1.85;
-      min-height: 100vh;
+      background: var(--bg);
+      font-size: 14.5px;
+      line-height: 1.9;
+      font-weight: 300;
+      overflow-x: hidden;
     }
 
-    /* tiny floating deco dots */
-    body::before {
-      content: '';
-      position: fixed; inset: 0; pointer-events: none; z-index: 0;
-      background-image:
-        radial-gradient(circle, rgba(255,183,197,.35) 2px, transparent 2px),
-        radial-gradient(circle, rgba(212,197,249,.3) 2px, transparent 2px),
-        radial-gradient(circle, rgba(181,234,215,.3) 2px, transparent 2px);
-      background-size: 120px 120px, 90px 90px, 150px 150px;
-      background-position: 10px 10px, 55px 55px, 80px 20px;
-    }
+    a { color: var(--pink); text-decoration: none; }
+    a:hover { opacity: .7; }
 
-    a { color: var(--pink2); text-decoration: none; cursor: pointer; }
-    a:hover { text-decoration: underline dotted; color: var(--lav2); }
+    /* ===== PAGE VISIBILITY ===== */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ===== SCROLL REVEAL ===== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .75s var(--ease), transform .75s var(--ease);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: .1s; }
+    .reveal-delay-2 { transition-delay: .2s; }
+    .reveal-delay-3 { transition-delay: .3s; }
+    .reveal-delay-4 { transition-delay: .4s; }
 
     /* ===== HEADER ===== */
     header {
-      position: sticky; top: 0; z-index: 100;
-      background: rgba(255,255,255,.92);
-      backdrop-filter: blur(10px);
-      border-bottom: 3px dashed var(--pink);
-      box-shadow: 0 2px 20px rgba(255,143,171,.12);
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      transition: background .4s var(--ease), box-shadow .4s var(--ease), padding .4s var(--ease);
+      padding: 0;
+    }
+    header.scrolled {
+      background: rgba(248,246,242,.97);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 1px 0 var(--border);
     }
     .header-inner {
-      max-width: 1080px; margin: 0 auto;
-      padding: 0 20px; height: 64px;
+      max-width: 1180px; margin: 0 auto;
+      padding: 0 40px; height: 76px;
       display: flex; align-items: center; justify-content: space-between;
+      transition: height .4s var(--ease);
     }
-    .site-logo {
-      font-family: 'Klee One', cursive;
-      font-size: 1.4rem; font-weight: 600;
-      color: var(--pink2);
-      display: flex; align-items: center; gap: 8px;
-      letter-spacing: .04em;
-    }
-    .site-logo::before { content: '🎹'; font-size: 1.2rem; }
-    .site-logo:hover { text-decoration: none; color: var(--lav2); }
+    header.scrolled .header-inner { height: 60px; }
 
-    /* ===== NAV ===== */
-    nav ul { list-style: none; display: flex; gap: 4px; align-items: center; }
+    .site-logo { cursor: pointer; display: flex; flex-direction: column; gap: 2px; }
+    .logo-en {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem; font-weight: 400; letter-spacing: .3em;
+      color: var(--white); text-transform: uppercase; line-height: 1;
+      transition: color .4s;
+    }
+    header.scrolled .logo-en { color: var(--gold); }
+    .logo-ja {
+      font-family: 'Noto Serif JP', serif;
+      font-size: .7rem; font-weight: 300; letter-spacing: .2em;
+      color: rgba(255,255,255,.6); transition: color .4s;
+    }
+    header.scrolled .logo-ja { color: var(--text3); }
+
+    /* NAV */
+    nav ul { list-style: none; display: flex; align-items: center; gap: 0; }
     nav > ul > li { position: relative; }
     nav > ul > li > a,
     nav > ul > li > span {
-      display: flex; align-items: center; gap: 3px;
-      padding: 7px 13px; font-size: .85rem; font-weight: 500;
-      color: var(--text); cursor: pointer;
-      border-radius: 999px;
-      border: 2px solid transparent;
-      transition: all .2s; white-space: nowrap;
-      user-select: none;
+      display: flex; align-items: center; gap: 4px;
+      padding: 8px 16px; font-size: .76rem; letter-spacing: .12em;
+      color: rgba(255,255,255,.8); cursor: pointer;
+      transition: color .25s; white-space: nowrap; user-select: none;
+      position: relative;
     }
+    nav > ul > li > a::after {
+      content: ''; position: absolute; bottom: 0; left: 16px; right: 16px;
+      height: 1px; background: var(--pink-mid);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform .3s var(--ease);
+    }
+    nav > ul > li > a:hover::after { transform: scaleX(1); }
+    header.scrolled nav > ul > li > a,
+    header.scrolled nav > ul > li > span { color: var(--text2); }
     nav > ul > li > a:hover,
     nav > ul > li > span:hover,
     nav > ul > li:hover > a,
-    nav > ul > li:hover > span {
-      background: var(--pink-bg);
-      border-color: var(--pink);
-      color: var(--pink2);
-      text-decoration: none;
-    }
+    nav > ul > li:hover > span { color: var(--pink); opacity: 1; }
+
     .dropdown-menu {
-      display: none; position: absolute; top: calc(100% + 6px); left: 0;
-      background: var(--white); min-width: 176px;
-      border: 2.5px solid var(--pink); border-radius: 18px;
-      box-shadow: var(--shadow); z-index: 200;
-      overflow: hidden; padding: 6px;
+      display: none; position: absolute; top: calc(100% + 2px); left: 0;
+      background: var(--white); min-width: 178px;
+      border-top: 2px solid var(--pink);
+      box-shadow: 0 12px 40px rgba(28,24,21,.12);
+      animation: dropIn .2s var(--ease);
+    }
+    @keyframes dropIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
     nav > ul > li:hover .dropdown-menu { display: block; }
     .dropdown-menu li a {
-      display: block; padding: 9px 14px;
-      font-size: .84rem; color: var(--text);
-      border-radius: 12px;
-      transition: background .12s, color .12s;
+      display: block; padding: 11px 20px;
+      font-size: .76rem; letter-spacing: .1em; color: var(--text2);
+      border-bottom: 1px solid var(--border);
+      transition: color .15s, padding-left .2s;
     }
-    .dropdown-menu li a:hover {
-      background: var(--pink-bg); color: var(--pink2);
-      text-decoration: none;
-    }
-    .arrow { font-size: .65rem; opacity: .7; }
+    .dropdown-menu li:last-child a { border-bottom: none; }
+    .dropdown-menu li a:hover { color: var(--pink); padding-left: 26px; opacity: 1; }
+    .arrow { font-size: .55rem; opacity: .5; transition: transform .2s; }
+    nav > ul > li:hover .arrow { transform: rotate(180deg); }
 
     .hamburger {
       display: none; background: none; border: none; cursor: pointer;
       flex-direction: column; gap: 5px; padding: 6px;
     }
     .hamburger span {
-      display: block; width: 24px; height: 2.5px;
-      background: var(--pink2); border-radius: 99px; transition: .3s;
+      display: block; width: 22px; height: 1px;
+      background: var(--white); transition: .3s;
     }
+    header.scrolled .hamburger span { background: var(--text2); }
 
     /* ===== HERO ===== */
     .hero {
-      position: relative; overflow: hidden;
-      background: linear-gradient(160deg, #FFF0F3 0%, #F5EEFF 40%, #EDFBF5 100%);
-      min-height: 360px;
+      position: relative; height: 100vh; min-height: 600px;
       display: flex; align-items: center; justify-content: center;
-      text-align: center;
+      overflow: hidden;
+      background: var(--dark);
     }
-    .hero::before, .hero::after {
-      content: '';
-      position: absolute;
-      border-radius: 50%;
-    }
-    .hero::before {
-      width: 380px; height: 380px;
-      background: rgba(255,183,197,.2);
-      top: -120px; left: -80px;
-    }
-    .hero::after {
-      width: 300px; height: 300px;
-      background: rgba(212,197,249,.2);
-      bottom: -100px; right: -60px;
-    }
-    .hero-slide {
+    /* Animated gradient background */
+    .hero-bg {
       position: absolute; inset: 0;
-      display: flex; align-items: center; justify-content: center;
-      opacity: 0; transition: opacity 1s ease;
-      z-index: 1;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 60%, rgba(184,92,114,.18) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 80% at 80% 30%, rgba(160,120,64,.12) 0%, transparent 50%),
+        linear-gradient(160deg, #1C1815 0%, #2A2018 50%, #1A1C1E 100%);
+      animation: heroBg 12s ease-in-out infinite alternate;
     }
-    .hero-slide.active { opacity: 1; }
-    .hero-text { padding: 40px 20px; }
-    .hero-text h2 {
-      font-family: 'Klee One', cursive;
-      font-size: 2rem; font-weight: 600;
-      color: var(--pink2); margin-bottom: 12px;
-      text-shadow: 0 2px 8px rgba(255,143,171,.25);
-      line-height: 1.4;
+    @keyframes heroBg {
+      0%   { filter: brightness(1); }
+      100% { filter: brightness(1.08); }
     }
-    .hero-text p { font-size: .95rem; color: var(--text2); }
-    .hero-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: var(--white); border: 2px solid var(--pink);
-      border-radius: 999px; padding: 4px 14px;
-      font-size: .8rem; color: var(--pink2); font-weight: 700;
-      margin-bottom: 14px;
+    /* Subtle grid overlay */
+    .hero-grid {
+      position: absolute; inset: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+      background-size: 80px 80px;
     }
+    /* Thin decorative vertical lines */
+    .hero-lines {
+      position: absolute; inset: 0; pointer-events: none;
+      display: flex; justify-content: space-between; padding: 0 15%;
+    }
+    .hero-lines span {
+      display: block; width: 1px;
+      background: linear-gradient(to bottom, transparent, rgba(184,92,114,.3), transparent);
+      animation: lineFloat 6s ease-in-out infinite;
+    }
+    .hero-lines span:nth-child(2) { animation-delay: 2s; }
+    .hero-lines span:nth-child(3) { animation-delay: 4s; }
+    @keyframes lineFloat {
+      0%, 100% { opacity: .3; }
+      50%       { opacity: .7; }
+    }
+
+    .hero-content {
+      position: relative; z-index: 1; text-align: center; padding: 0 24px;
+      animation: heroReveal 1.4s var(--ease) forwards;
+      opacity: 0;
+    }
+    @keyframes heroReveal {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero-tag {
+      display: inline-block;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: .85rem; font-weight: 300; letter-spacing: .5em;
+      color: var(--pink-mid); text-transform: uppercase;
+      margin-bottom: 22px; animation-delay: .2s;
+    }
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.6rem, 6vw, 5rem);
+      font-weight: 300; line-height: 1.2; letter-spacing: .06em;
+      color: var(--white); margin-bottom: 10px;
+    }
+    .hero-title em {
+      font-style: italic; color: var(--pink-mid);
+    }
+    .hero-title-ja {
+      font-family: 'Noto Serif JP', serif;
+      font-size: clamp(1.1rem, 2.5vw, 1.7rem);
+      font-weight: 200; letter-spacing: .18em;
+      color: rgba(255,255,255,.65); margin-bottom: 28px; display: block;
+    }
+    .hero-rule {
+      width: 1px; height: 48px;
+      background: linear-gradient(to bottom, var(--pink-mid), transparent);
+      margin: 0 auto 22px;
+    }
+    .hero-desc {
+      font-size: .83rem; letter-spacing: .12em; color: rgba(255,255,255,.5);
+      line-height: 2.2;
+    }
+    .hero-cta {
+      display: inline-flex; align-items: center; gap: 10px;
+      margin-top: 36px; padding: 14px 36px;
+      border: 1px solid rgba(184,92,114,.5); color: rgba(255,255,255,.8);
+      font-size: .78rem; letter-spacing: .22em; text-transform: uppercase;
+      transition: all .3s var(--ease); cursor: pointer;
+    }
+    .hero-cta:hover {
+      background: var(--pink); border-color: var(--pink);
+      color: var(--white); opacity: 1;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(184,92,114,.3);
+    }
+    .hero-cta-arrow { transition: transform .3s; font-style: normal; }
+    .hero-cta:hover .hero-cta-arrow { transform: translateX(4px); }
+
+    .hero-scroll {
+      position: absolute; bottom: 36px; left: 50%;
+      transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      animation: scrollPulse 2.5s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: .4; transform: translateX(-50%) translateY(0); }
+      50%       { opacity: .8; transform: translateX(-50%) translateY(5px); }
+    }
+    .hero-scroll span {
+      font-size: .65rem; letter-spacing: .3em; color: rgba(255,255,255,.4);
+      text-transform: uppercase;
+    }
+    .hero-scroll-line {
+      width: 1px; height: 36px;
+      background: linear-gradient(to bottom, rgba(255,255,255,.3), transparent);
+    }
+
+    /* Slide controls */
+    .hero-slides { position: relative; z-index: 1; }
+    .hero-slide { display: none; }
+    .hero-slide.active { display: block; }
     .hero-dots {
-      position: absolute; bottom: 18px; left: 50%;
-      transform: translateX(-50%); display: flex; gap: 8px; z-index: 2;
+      position: absolute; bottom: 80px; left: 50%;
+      transform: translateX(-50%); display: flex; gap: 12px; z-index: 2;
     }
     .hero-dot {
-      width: 10px; height: 10px; border-radius: 50%;
-      background: var(--pink); opacity: .4;
-      cursor: pointer; border: none; transition: all .2s;
+      width: 20px; height: 1px; background: rgba(255,255,255,.3);
+      border: none; cursor: pointer; transition: all .3s;
     }
-    .hero-dot.active { opacity: 1; transform: scale(1.3); background: var(--pink2); }
+    .hero-dot.active { width: 40px; background: var(--pink-mid); }
 
     /* ===== LAYOUT ===== */
     .main-layout {
-      display: grid; grid-template-columns: 1fr 268px;
-      gap: 32px; padding: 36px 20px;
-      max-width: 1080px; margin: 0 auto;
-      position: relative; z-index: 1;
+      display: grid; grid-template-columns: 1fr 270px;
+      gap: 56px; padding: 64px 40px;
+      max-width: 1180px; margin: 0 auto;
     }
 
-    /* ===== SECTION TITLE ===== */
-    h2.section-title {
-      font-family: 'Klee One', cursive;
-      font-size: 1.15rem; font-weight: 600;
-      color: var(--text);
-      display: flex; align-items: center; gap: 8px;
-      margin-bottom: 16px;
+    /* ===== SECTION ===== */
+    .section { margin-bottom: 60px; }
+    .section-head { margin-bottom: 28px; }
+    .section-en {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: .78rem; font-weight: 300; letter-spacing: .45em;
+      color: var(--pink); text-transform: uppercase; display: block; margin-bottom: 6px;
     }
-    h2.section-title::before {
-      content: '';
-      display: inline-block; width: 14px; height: 14px;
-      background: var(--pink); border-radius: 50%;
-      box-shadow: 0 0 0 4px rgba(255,183,197,.3);
-      flex-shrink: 0;
+    .section-ja {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1.3rem; font-weight: 300; letter-spacing: .12em; color: var(--text);
+      position: relative; padding-bottom: 14px;
     }
-
-    /* ===== CARDS ===== */
-    .card {
-      background: var(--white);
-      border: 2.5px solid var(--pink);
-      border-radius: 20px;
-      padding: 22px 24px;
-      box-shadow: var(--shadow);
-      margin-bottom: 28px;
-      position: relative;
-    }
-    .card::after {
-      content: '';
-      position: absolute; bottom: -5px; right: 14px;
-      width: 90%; height: 8px;
-      background: rgba(255,183,197,.18);
-      border-radius: 0 0 20px 20px;
-      z-index: -1;
-    }
-    .card-mint {
-      border-color: var(--mint2);
-      box-shadow: 0 4px 18px rgba(120,213,184,.18);
-    }
-    .card-mint::after { background: rgba(120,213,184,.15); }
-    .card-lav {
-      border-color: var(--lavender);
-      box-shadow: var(--shadow2);
-    }
-    .card-lav::after { background: rgba(167,139,250,.12); }
-    .card-yellow {
-      border-color: var(--yellow2);
-      box-shadow: 0 4px 18px rgba(255,217,61,.18);
+    .section-ja::after {
+      content: ''; position: absolute; bottom: 0; left: 0;
+      width: 32px; height: 1px; background: var(--pink);
     }
 
     /* ===== PAGE HEADER ===== */
     .page-header {
-      background: linear-gradient(135deg, #FFF0F3, #F5EEFF);
-      border-bottom: 3px dashed var(--pink);
-      padding: 28px 20px 24px;
+      padding: 110px 40px 52px;
+      background: var(--dark2);
       position: relative; overflow: hidden;
     }
-    .page-header::after {
-      content: '🎵';
-      position: absolute; right: 40px; top: 50%;
-      transform: translateY(-50%);
-      font-size: 3rem; opacity: .15;
+    .page-header::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 70% 100% at 85% 50%, rgba(184,92,114,.12) 0%, transparent 60%),
+        linear-gradient(160deg, var(--dark) 0%, var(--dark2) 100%);
+    }
+    .page-header-inner { max-width: 1180px; margin: 0 auto; position: relative; }
+    .page-header-en {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: .82rem; letter-spacing: .45em; color: var(--pink-mid);
+      text-transform: uppercase; margin-bottom: 10px; display: block;
     }
     .page-header h1 {
-      max-width: 1080px; margin: 0 auto;
-      font-family: 'Klee One', cursive;
-      font-size: 1.55rem; font-weight: 600;
-      color: var(--pink2);
-      display: flex; align-items: center; gap: 10px;
+      font-family: 'Noto Serif JP', serif;
+      font-size: clamp(1.4rem, 3vw, 2.2rem); font-weight: 200;
+      letter-spacing: .18em; color: var(--white);
     }
-    .page-header h1::before {
-      content: '✦';
-      color: var(--yellow2); font-size: 1.1rem;
+
+    /* ===== BOX ===== */
+    .box {
+      background: var(--white); border: 1px solid var(--border);
+      padding: 30px 32px; margin-bottom: 20px;
+      transition: box-shadow .3s var(--ease);
+    }
+    .box:hover { box-shadow: 0 4px 24px rgba(28,24,21,.07); }
+    .box p { font-size: .9rem; margin-bottom: 12px; }
+    .box p:last-child { margin-bottom: 0; }
+    .box-accent {
+      border-left: 2px solid var(--pink);
+      background: linear-gradient(to right, var(--pink-lt), var(--white));
+    }
+    .box-gold {
+      border-left: 2px solid var(--gold);
+      background: linear-gradient(to right, var(--gold-lt), var(--white));
     }
 
     /* ===== PAGE CONTENT ===== */
     .page-content h2 {
-      font-family: 'Klee One', cursive;
-      font-size: 1.15rem; font-weight: 600;
-      color: var(--text);
-      background: var(--pink-bg);
-      border-left: 4px solid var(--pink2);
-      border-radius: 0 12px 12px 0;
-      padding: 8px 16px;
-      margin: 26px 0 14px;
-      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1rem; font-weight: 400; letter-spacing: .16em;
+      color: var(--text); margin: 40px 0 16px;
+      padding-bottom: 12px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .page-content h2::before {
+      content: ''; width: 3px; height: 16px; background: var(--pink); flex-shrink: 0;
     }
     .page-content h2:first-child { margin-top: 0; }
     .page-content h3 {
-      font-size: .95rem; color: var(--pink2);
-      margin: 18px 0 8px; font-weight: 700;
-      display: flex; align-items: center; gap: 6px;
+      font-size: .88rem; color: var(--pink); letter-spacing: .12em;
+      margin: 22px 0 8px; font-weight: 400;
     }
-    .page-content h3::before { content: '♪'; font-size: .9rem; }
-    .page-content p { margin-bottom: 12px; line-height: 1.85; }
+    .page-content p { font-size: .9rem; margin-bottom: 12px; }
 
-    /* ===== CUTE LIST ===== */
-    .cute-list { list-style: none; }
-    .cute-list li {
-      padding: 8px 0 8px 24px;
-      position: relative;
-      border-bottom: 1px dotted rgba(255,183,197,.4);
-      font-size: .92rem;
+    /* ===== REFINED LIST ===== */
+    .refined-list { list-style: none; }
+    .refined-list li {
+      padding: 11px 0 11px 18px; position: relative;
+      border-bottom: 1px solid var(--border);
+      font-size: .88rem;
+      transition: padding-left .2s;
     }
-    .cute-list li:last-child { border-bottom: none; }
-    .cute-list li::before {
-      content: '🌸';
-      position: absolute; left: 0; top: 8px;
-      font-size: .75rem;
+    .refined-list li:hover { padding-left: 24px; }
+    .refined-list li:last-child { border-bottom: none; }
+    .refined-list li::before {
+      content: ''; position: absolute; left: 0; top: 50%;
+      transform: translateY(-50%);
+      width: 5px; height: 1px; background: var(--pink);
+      transition: width .2s;
     }
+    .refined-list li:hover::before { width: 10px; }
 
-    /* ===== NEWS LIST ===== */
     .news-list { list-style: none; }
     .news-list li {
-      padding: 10px 14px;
-      border-bottom: 1.5px dashed rgba(255,183,197,.5);
-      font-size: .9rem;
-      display: flex; align-items: flex-start; gap: 8px;
+      padding: 12px 0; border-bottom: 1px solid var(--border);
+      font-size: .88rem; display: flex; align-items: baseline; gap: 12px;
     }
     .news-list li:last-child { border-bottom: none; }
-    .news-list li::before { content: '★'; color: var(--yellow2); flex-shrink: 0; }
-
-    /* ===== SIDEBAR ===== */
-    .sidebar { display: flex; flex-direction: column; gap: 22px; }
-
-    .widget {
-      background: var(--white);
-      border: 2.5px solid var(--pink);
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-    .widget-mint { border-color: var(--mint2); box-shadow: 0 4px 18px rgba(120,213,184,.18); }
-    .widget-lav  { border-color: var(--lavender); box-shadow: var(--shadow2); }
-
-    .widget-title {
-      background: linear-gradient(90deg, var(--pink), var(--lavender));
-      color: var(--white);
-      font-size: .88rem; font-weight: 700;
-      padding: 9px 16px; letter-spacing: .05em;
-      display: flex; align-items: center; gap: 6px;
-    }
-    .widget-title-mint {
-      background: linear-gradient(90deg, var(--mint2), var(--mint));
-      color: var(--text);
-    }
-    .widget-body { padding: 14px 16px; }
-
-    /* ===== CTA BUTTONS ===== */
-    .cta-area { display: flex; flex-direction: column; gap: 10px; padding: 14px; }
-    .btn-cta {
-      display: flex; align-items: center; justify-content: center; gap: 7px;
-      text-align: center; padding: 12px 16px;
-      border-radius: 999px; font-size: .88rem; font-weight: 700;
-      transition: transform .15s, box-shadow .15s;
-      cursor: pointer; font-family: inherit;
-    }
-    .btn-cta:hover { transform: translateY(-2px) scale(1.02); text-decoration: none; }
-    .btn-cta.primary {
-      background: linear-gradient(135deg, var(--pink), var(--pink2));
-      color: var(--white);
-      box-shadow: 0 4px 14px rgba(255,143,171,.4);
-    }
-    .btn-cta.primary:hover { box-shadow: 0 6px 20px rgba(255,143,171,.5); }
-    .btn-cta.mint {
-      background: linear-gradient(135deg, var(--mint), var(--mint2));
-      color: var(--text);
-      box-shadow: 0 4px 14px rgba(120,213,184,.4);
-    }
-    .btn-cta.lav {
-      background: linear-gradient(135deg, var(--lavender), var(--lav2));
-      color: var(--white);
-      box-shadow: 0 4px 14px rgba(167,139,250,.4);
-    }
-
-    /* ===== SIDEBAR NAV ===== */
-    .sidebar-nav { list-style: none; }
-    .sidebar-nav li { border-bottom: 1px dashed rgba(255,183,197,.4); }
-    .sidebar-nav li:last-child { border-bottom: none; }
-    .sidebar-nav li a {
-      display: flex; align-items: center; gap: 8px;
-      padding: 9px 14px; font-size: .84rem; color: var(--text);
-      transition: background .12s, color .12s; border-radius: 8px;
-    }
-    .sidebar-nav li a::before { content: '♩'; color: var(--pink); }
-    .sidebar-nav li a:hover, .sidebar-nav li a.active {
-      background: var(--pink-bg); color: var(--pink2);
-      text-decoration: none;
-    }
-    .sidebar-nav li a.active { font-weight: 700; }
-
-    /* ===== CALENDAR ===== */
-    .calendar { width: 100%; border-collapse: collapse; font-size: .82rem; }
-    .calendar caption { font-weight: 700; margin-bottom: 8px; color: var(--pink2); font-size: .88rem; font-family: 'Klee One', cursive; }
-    .calendar th { text-align: center; padding: 5px 2px; color: var(--text2); font-weight: 500; font-size: .75rem; }
-    .calendar td { text-align: center; padding: 4px 2px; font-size: .8rem; }
-    .calendar td a {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 26px; height: 26px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--pink), var(--pink2));
-      color: var(--white); font-size: .78rem; font-weight: 700;
-    }
-    .calendar td a:hover { background: var(--lav2); text-decoration: none; }
-
-    /* ===== RECENT POSTS ===== */
-    .recent-posts { list-style: none; }
-    .recent-posts li { padding: 10px 0; border-bottom: 1px dashed rgba(255,183,197,.4); font-size: .84rem; line-height: 1.5; }
-    .recent-posts li:last-child { border-bottom: none; }
-    .recent-posts .post-date { display: block; font-size: .73rem; color: var(--text2); margin-top: 3px; }
-    .recent-posts li a { color: var(--text); }
-    .recent-posts li a:hover { color: var(--pink2); }
-
-    /* ===== COURSE CARDS ===== */
-    .course-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 14px; margin: 16px 0; }
-    .course-card {
-      background: var(--white); border: 2.5px solid var(--pink);
-      border-radius: 18px; padding: 18px 14px; text-align: center;
-      transition: transform .2s, box-shadow .2s;
-    }
-    .course-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
-    .course-card .ci { font-size: 2rem; margin-bottom: 8px; }
-    .course-card h3 { font-size: .9rem; color: var(--text); margin-bottom: 4px; }
-    .course-card p { font-size: .8rem; color: var(--text2); }
+    .news-list li::before { content: '—'; color: var(--pink-mid); flex-shrink: 0; }
 
     /* ===== TABLE ===== */
-    .cute-table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 16px 0; font-size: .88rem; border-radius: 14px; overflow: hidden; }
-    .cute-table th { background: linear-gradient(90deg, var(--pink), var(--lavender)); color: var(--white); padding: 10px 14px; text-align: left; font-weight: 700; }
-    .cute-table td { padding: 10px 14px; border-bottom: 1px solid rgba(255,183,197,.25); }
-    .cute-table tr:last-child td { border-bottom: none; }
-    .cute-table tr:nth-child(even) td { background: var(--pink-bg); }
+    .elegant-table { width: 100%; border-collapse: collapse; font-size: .87rem; margin: 14px 0; }
+    .elegant-table th {
+      background: var(--dark); color: rgba(255,255,255,.8);
+      padding: 12px 18px; text-align: left;
+      font-weight: 300; letter-spacing: .12em; font-size: .78rem;
+    }
+    .elegant-table td { padding: 12px 18px; border-bottom: 1px solid var(--border); }
+    .elegant-table tr:last-child td { border-bottom: none; }
+    .elegant-table tr { transition: background .15s; }
+    .elegant-table tr:hover td { background: var(--pink-lt); }
 
-    /* ===== VOICE CARDS ===== */
-    .voice-card {
-      background: var(--white); border: 2px solid var(--lavender);
-      border-radius: 16px; padding: 16px 18px; margin-bottom: 14px;
-      position: relative;
+    /* ===== VIDEO ===== */
+    .video-wrap {
+      position: relative; background: var(--dark2); overflow: hidden;
     }
-    .voice-card::before {
-      content: '❝';
-      position: absolute; top: -10px; left: 14px;
-      font-size: 1.6rem; color: var(--lavender); line-height: 1;
+    .video-label {
+      padding: 14px 20px; font-size: .72rem; letter-spacing: .25em;
+      color: var(--text3); text-transform: uppercase;
+      font-family: 'Cormorant Garamond', serif; border-bottom: 1px solid var(--border);
     }
-    .voice-card .voice-meta { font-size: .78rem; color: var(--lav2); margin-bottom: 6px; font-weight: 700; }
-    .voice-card p { font-size: .88rem; }
+    .video-wrap iframe { display: block; }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar { display: flex; flex-direction: column; gap: 28px; }
+
+    .widget {
+      background: var(--white); border: 1px solid var(--border);
+      overflow: hidden;
+      transition: box-shadow .3s;
+    }
+    .widget:hover { box-shadow: 0 4px 20px rgba(28,24,21,.06); }
+
+    .widget-title {
+      padding: 14px 20px; font-size: .74rem; letter-spacing: .2em;
+      color: var(--text2); border-bottom: 1px solid var(--border);
+      font-family: 'Noto Serif JP', serif; font-weight: 400;
+      display: flex; align-items: center; gap: 10px;
+      background: var(--bg2);
+    }
+    .widget-title::before {
+      content: ''; width: 16px; height: 1px; background: var(--pink);
+    }
+    .widget-body { padding: 18px 20px; }
+
+    /* CTA */
+    .cta-area { padding: 18px; display: flex; flex-direction: column; gap: 10px; }
+    .btn-cta {
+      display: block; text-align: center;
+      padding: 13px 16px; font-size: .77rem; letter-spacing: .18em;
+      cursor: pointer; transition: all .25s var(--ease);
+      font-family: 'Noto Sans JP', sans-serif; font-weight: 400;
+      position: relative; overflow: hidden;
+    }
+    .btn-cta::before {
+      content: ''; position: absolute; inset: 0;
+      background: var(--pink); transform: translateX(-101%);
+      transition: transform .3s var(--ease);
+    }
+    .btn-cta:hover::before { transform: translateX(0); }
+    .btn-cta span { position: relative; z-index: 1; }
+    .btn-primary {
+      background: var(--pink); color: var(--white); border: 1px solid var(--pink);
+    }
+    .btn-primary::before { background: var(--dark); }
+    .btn-primary:hover { opacity: 1; color: var(--white); }
+    .btn-outline {
+      background: transparent; color: var(--text2); border: 1px solid var(--border2);
+    }
+    .btn-outline::before { background: var(--pink); }
+    .btn-outline:hover { color: var(--white); border-color: var(--pink); opacity: 1; }
+
+    /* Sidebar nav */
+    .sidebar-nav { list-style: none; }
+    .sidebar-nav li { border-bottom: 1px solid var(--border); }
+    .sidebar-nav li:last-child { border-bottom: none; }
+    .sidebar-nav li a {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 11px 20px; font-size: .8rem; letter-spacing: .08em;
+      color: var(--text2); transition: all .2s;
+    }
+    .sidebar-nav li a::after {
+      content: '›'; color: var(--border2); transition: transform .2s, color .2s;
+    }
+    .sidebar-nav li a:hover {
+      color: var(--pink); background: var(--pink-lt);
+      padding-left: 24px; opacity: 1;
+    }
+    .sidebar-nav li a:hover::after { color: var(--pink); transform: translateX(3px); }
+    .sidebar-nav li a.active { color: var(--pink); font-weight: 500; }
+
+    /* Calendar */
+    .calendar { width: 100%; border-collapse: collapse; font-size: .78rem; }
+    .calendar caption { font-size: .8rem; letter-spacing: .12em; color: var(--text2); margin-bottom: 10px; font-family: 'Noto Serif JP', serif; }
+    .calendar th { text-align: center; padding: 4px 2px; color: var(--text3); font-weight: 300; font-size: .72rem; }
+    .calendar td { text-align: center; padding: 4px 2px; }
+    .calendar td a {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 24px; height: 24px;
+      background: var(--pink); color: var(--white); font-size: .72rem;
+      border-radius: 50%; transition: background .2s, transform .2s;
+    }
+    .calendar td a:hover { background: var(--dark); transform: scale(1.1); opacity: 1; }
+
+    /* Recent posts */
+    .recent-posts { list-style: none; }
+    .recent-posts li {
+      padding: 11px 0; border-bottom: 1px solid var(--border);
+      transition: padding-left .2s;
+    }
+    .recent-posts li:last-child { border-bottom: none; }
+    .recent-posts li:hover { padding-left: 4px; }
+    .recent-posts li a { font-size: .82rem; color: var(--text); display: block; line-height: 1.6; transition: color .2s; }
+    .recent-posts li a:hover { color: var(--pink); opacity: 1; }
+    .recent-posts .post-date { font-size: .7rem; color: var(--text3); margin-top: 2px; display: block; letter-spacing: .08em; font-family: 'Cormorant Garamond', serif; }
+
+    /* ===== VOICE ===== */
+    .voice-item {
+      padding: 24px 28px; margin-bottom: 16px;
+      background: var(--white); border: 1px solid var(--border);
+      border-left: 2px solid var(--pink-mid); position: relative;
+      transition: border-left-color .3s, box-shadow .3s;
+    }
+    .voice-item:hover { border-left-color: var(--pink); box-shadow: 0 4px 20px rgba(28,24,21,.06); }
+    .voice-item::before {
+      content: '\201C';
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 4rem; line-height: 1; color: var(--pink-lt);
+      position: absolute; top: 8px; left: 16px;
+    }
+    .voice-meta {
+      font-size: .72rem; letter-spacing: .14em; color: var(--text3);
+      margin-bottom: 8px; position: relative;
+    }
+    .voice-item p { font-size: .9rem; font-style: italic; color: var(--text2); position: relative; }
 
     /* ===== BLOG ===== */
     .blog-item {
-      background: var(--white); border: 2px solid var(--mint2);
-      border-radius: 18px; padding: 16px 20px; margin-bottom: 14px;
-      transition: box-shadow .2s;
+      border-bottom: 1px solid var(--border); padding: 24px 0;
+      display: grid; grid-template-columns: auto 1fr; gap: 0 24px;
+      transition: padding-left .2s; cursor: pointer;
     }
-    .blog-item:hover { box-shadow: 0 4px 16px rgba(120,213,184,.2); }
-    .blog-item .date { font-size: .75rem; color: var(--text2); margin-bottom: 4px; }
-    .blog-item h3 { font-size: .95rem; color: var(--text); margin-bottom: 6px; font-family: 'Klee One', cursive; }
-    .blog-item p { font-size: .84rem; color: var(--text2); }
+    .blog-item:hover { padding-left: 8px; }
+    .blog-item:last-child { border-bottom: none; }
+    .blog-date-col {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: .8rem; letter-spacing: .1em; color: var(--text3);
+      white-space: nowrap; padding-top: 2px;
+    }
+    .blog-date-day { font-size: 2rem; line-height: 1; color: var(--pink-mid); display: block; }
+    .blog-date-ym { font-size: .72rem; color: var(--text3); }
+    .blog-body h3 { font-family: 'Noto Serif JP', serif; font-size: .95rem; font-weight: 400; color: var(--text); margin-bottom: 6px; letter-spacing: .06em; transition: color .2s; }
+    .blog-item:hover .blog-body h3 { color: var(--pink); }
+    .blog-body p { font-size: .83rem; color: var(--text2); }
 
     /* ===== FORM ===== */
-    .form-wrap { background: var(--white); border: 2.5px solid var(--pink); border-radius: 20px; padding: 24px; }
-    .form-row { margin-bottom: 16px; }
-    .form-row label { display: flex; align-items: center; gap: 5px; font-size: .85rem; font-weight: 700; margin-bottom: 6px; color: var(--text); }
-    .form-row label::before { content: '✿'; color: var(--pink2); font-size: .75rem; }
+    .form-row { margin-bottom: 20px; }
+    .form-row label { display: block; font-size: .76rem; letter-spacing: .14em; color: var(--text2); margin-bottom: 8px; }
     .form-row input, .form-row select, .form-row textarea {
-      width: 100%; padding: 10px 14px;
-      border: 2px solid rgba(255,183,197,.5); border-radius: 12px;
-      font-size: .9rem; font-family: inherit;
-      background: var(--pink-bg);
-      transition: border-color .15s, box-shadow .15s;
-      color: var(--text);
+      width: 100%; padding: 12px 16px;
+      border: 1px solid var(--border2); background: var(--white);
+      font-size: .9rem; font-family: inherit; font-weight: 300; color: var(--text);
+      transition: border-color .2s, box-shadow .2s; outline: none;
     }
     .form-row input:focus, .form-row select:focus, .form-row textarea:focus {
-      outline: none; border-color: var(--pink2);
-      box-shadow: 0 0 0 4px rgba(255,143,171,.12); background: var(--white);
+      border-color: var(--pink);
+      box-shadow: 0 0 0 3px rgba(184,92,114,.08);
     }
-    .form-submit {
-      background: linear-gradient(135deg, var(--pink), var(--pink2));
-      color: var(--white); border: none;
-      padding: 13px 40px; font-size: .95rem; font-weight: 700;
-      border-radius: 999px; cursor: pointer;
-      box-shadow: 0 4px 14px rgba(255,143,171,.4);
-      transition: transform .15s, box-shadow .15s;
-      font-family: inherit;
+    .btn-submit {
+      background: var(--dark); color: var(--white); border: none;
+      padding: 14px 56px; font-size: .78rem; letter-spacing: .25em;
+      cursor: pointer; font-family: inherit; font-weight: 400;
+      transition: all .3s var(--ease); position: relative; overflow: hidden;
     }
-    .form-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,143,171,.5); }
+    .btn-submit::before {
+      content: ''; position: absolute; inset: 0;
+      background: var(--pink); transform: translateX(-101%);
+      transition: transform .3s var(--ease);
+    }
+    .btn-submit:hover::before { transform: translateX(0); }
+    .btn-submit span { position: relative; }
 
-    /* ===== MAP PLACEHOLDER ===== */
+    /* ===== MAP ===== */
     .map-ph {
-      background: var(--pink-bg); border: 2px dashed var(--pink);
-      border-radius: 16px; height: 260px;
-      display: flex; flex-direction: column;
+      background: var(--bg2); border: 1px solid var(--border);
+      height: 240px; display: flex; flex-direction: column;
       align-items: center; justify-content: center; gap: 8px;
-      color: var(--pink2); font-size: .88rem;
+      color: var(--text3); font-size: .8rem; letter-spacing: .12em;
+      margin: 16px 0;
     }
-    .map-ph .map-icon { font-size: 2.5rem; }
 
-    /* ===== PAPAMAMA BOX ===== */
-    .papa-box {
-      background: linear-gradient(135deg, #FFF0F3, #F5EEFF);
-      border: 2.5px solid var(--lavender); border-radius: 20px;
-      padding: 28px; text-align: center; margin-bottom: 22px;
+    /* ===== PAPA BOX ===== */
+    .papa-intro {
+      padding: 36px; margin-bottom: 28px;
+      background: linear-gradient(135deg, var(--pink-lt), var(--white));
+      border: 1px solid var(--pink-mid); border-left: 3px solid var(--pink);
+      text-align: center;
     }
-    .papa-box .pi { font-size: 3rem; margin-bottom: 12px; }
-    .papa-box h3 { font-family: 'Klee One', cursive; font-size: 1.1rem; color: var(--lav2); margin-bottom: 10px; }
+    .papa-intro h3 { font-family: 'Noto Serif JP', serif; font-size: 1rem; font-weight: 300; letter-spacing: .14em; color: var(--text); margin-bottom: 10px; }
 
-    /* ===== SCHOOL NEWS ===== */
-    .school-news-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: var(--yellow); border: 2px solid var(--yellow2);
-      border-radius: 999px; padding: 4px 12px;
-      font-size: .78rem; font-weight: 700; color: #7B5E00;
-      margin-bottom: 12px;
+    /* ===== NEWS YEAR ===== */
+    .news-year {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: .88rem; letter-spacing: .25em;
+      color: var(--gold); margin-bottom: 14px; display: block;
     }
+
+    /* ===== PHOTO PLACEHOLDER ===== */
+    .photo-ph {
+      float: right; width: 200px; height: 240px; margin: 0 0 20px 28px;
+      background: var(--bg2); border: 1px solid var(--border);
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; gap: 8px; color: var(--text3);
+      font-size: .74rem; letter-spacing: .12em; text-align: center;
+    }
+    .photo-ph-left {
+      float: left; width: 170px; height: 210px;
+      margin: 4px 28px 16px 0;
+    }
+    .clearfix::after { content: ''; display: block; clear: both; }
 
     /* ===== FOOTER ===== */
     footer {
-      background: linear-gradient(135deg, var(--pink2), var(--lav2));
-      color: rgba(255,255,255,.92); text-align: center;
-      padding: 30px 20px; font-size: .82rem; margin-top: 50px;
-      position: relative; overflow: hidden;
+      background: var(--dark); color: rgba(255,255,255,.35);
+      padding: 52px 40px 36px; margin-top: 0;
     }
-    footer::before {
-      content: '🎹  🎵  🎶  🎀  🌸  🎵  🎹  🎶  🌸  🎀';
-      display: block; font-size: 1rem;
-      letter-spacing: 8px; opacity: .25; margin-bottom: 10px;
+    .footer-inner {
+      max-width: 1180px; margin: 0 auto;
+      display: flex; flex-direction: column; align-items: center; gap: 16px;
     }
-
-    /* ===== PAGE VISIBILITY ===== */
-    .page { display: none; }
-    .page.active { display: block; }
-
-    /* ===== GREETING PHOTO PLACEHOLDER ===== */
-    .photo-placeholder {
-      float: right; margin: 0 0 16px 20px;
-      width: 180px; height: 220px;
-      background: linear-gradient(135deg, var(--pink-bg), #F5EEFF);
-      border: 2.5px dashed var(--pink); border-radius: 16px;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 6px;
-      color: var(--pink2); font-size: .75rem; text-align: center; padding: 10px;
+    .footer-logo-area { text-align: center; }
+    .footer-logo-en {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem; font-weight: 300; letter-spacing: .4em;
+      color: rgba(255,255,255,.6); display: block; margin-bottom: 4px;
     }
-    .photo-placeholder span { font-size: 2rem; }
-    .clearfix::after { content: ''; display: block; clear: both; }
+    .footer-rule { width: 32px; height: 1px; background: var(--pink); margin: 14px auto; }
+    .footer-nav {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 0;
+      border-top: 1px solid rgba(255,255,255,.06);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      padding: 12px 0;
+    }
+    .footer-nav a {
+      padding: 6px 14px; font-size: .72rem; letter-spacing: .1em;
+      color: rgba(255,255,255,.35); border-right: 1px solid rgba(255,255,255,.1);
+      transition: color .2s;
+    }
+    .footer-nav a:last-child { border-right: none; }
+    .footer-nav a:hover { color: var(--pink-mid); opacity: 1; }
+    .footer-copy { font-size: .7rem; letter-spacing: .14em; margin-top: 4px; }
 
     /* ===== RESPONSIVE ===== */
-    @media (max-width: 780px) {
-      .main-layout { grid-template-columns: 1fr; padding: 20px 14px; }
+    @media (max-width: 800px) {
+      .main-layout { grid-template-columns: 1fr; padding: 40px 20px; gap: 36px; }
       .hamburger { display: flex; }
       nav {
-        display: none; position: absolute;
-        top: 64px; left: 0; right: 0;
-        background: rgba(255,255,255,.97);
-        border-bottom: 3px dashed var(--pink);
-        box-shadow: 0 6px 20px rgba(255,143,171,.12);
-        padding: 8px 12px;
+        display: none; position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(28,24,21,.97);
+        align-items: center; justify-content: center;
+        flex-direction: column; z-index: 190;
       }
-      nav.open { display: block; }
-      nav ul { flex-direction: column; gap: 2px; }
-      nav > ul > li > a, nav > ul > li > span { border-radius: 12px; padding: 10px 14px; }
+      nav.open { display: flex; }
+      nav ul { flex-direction: column; align-items: center; gap: 4px; }
+      nav > ul > li > a, nav > ul > li > span {
+        color: rgba(255,255,255,.7); font-size: .9rem; letter-spacing: .16em;
+        padding: 14px 24px;
+      }
+      nav > ul > li > a:hover, nav > ul > li > span:hover { color: var(--pink-mid); }
+      nav > ul > li > a::after { display: none; }
       .dropdown-menu {
-        position: static; box-shadow: none;
-        border-radius: 12px; margin-left: 14px;
-        display: none; border: 2px solid var(--pink);
-        margin-top: 4px;
+        position: static; background: transparent; border: none;
+        box-shadow: none; animation: none; text-align: center;
       }
-      nav > ul > li.open .dropdown-menu { display: block; }
-      .hero { min-height: 260px; }
-      .hero-text h2 { font-size: 1.35rem; }
-      .photo-placeholder { float: none; width: 100%; height: 120px; margin: 0 0 16px 0; }
+      .dropdown-menu li a { color: rgba(255,255,255,.4); padding: 8px 24px; }
+      .dropdown-menu li a:hover { color: var(--pink-mid); background: transparent; padding-left: 24px; }
+      .hamburger span { background: var(--white) !important; }
+      header.scrolled .hamburger span { background: var(--white) !important; }
+      .hero-title { font-size: 2.2rem; }
+      .page-header { padding: 90px 20px 40px; }
+      .header-inner { padding: 0 20px; }
+      .footer-nav { gap: 0; }
+      .photo-ph, .photo-ph-left { float: none; width: 100%; height: 120px; margin: 0 0 16px 0; }
     }
   </style>
 </head>
 <body>
 
 <!-- ===== HEADER ===== -->
-<header>
+<header id="site-header">
   <div class="header-inner">
-    <span class="site-logo" onclick="showPage('home')">岡田音楽教室</span>
+    <div class="site-logo" onclick="showPage('home')">
+      <span class="logo-en">Okada Music School</span>
+      <span class="logo-ja">岡田音楽教室</span>
+    </div>
     <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
     <nav id="main-nav">
       <ul>
-        <li><a onclick="showPage('home')">🏠 ホーム</a></li>
+        <li><a onclick="showPage('home')">Home</a></li>
         <li>
-          <span>✏️ 教室案内 <span class="arrow">▾</span></span>
+          <span>教室案内 <span class="arrow">▾</span></span>
           <ul class="dropdown-menu">
             <li><a onclick="showPage('credo')">教室理念・方針</a></li>
             <li><a onclick="showPage('profile')">プロフィール</a></li>
@@ -586,9 +714,9 @@
             <li><a onclick="showPage('study')">学習塾</a></li>
           </ul>
         </li>
-        <li><a onclick="showPage('papamama')">🌸 パパママ会</a></li>
-        <li><a onclick="showPage('experience')">🎀 体験レッスン</a></li>
-        <li><a onclick="showPage('blog')">📝 ブログ</a></li>
+        <li><a onclick="showPage('papamama')">パパママ会</a></li>
+        <li><a onclick="showPage('experience')">体験レッスン</a></li>
+        <li><a onclick="showPage('blog')">ブログ</a></li>
       </ul>
     </nav>
   </div>
@@ -597,103 +725,117 @@
 <!-- ===================== HOME ===================== -->
 <div id="page-home" class="page active">
   <div class="hero">
-    <div class="hero-slide active">
-      <div class="hero-text">
-        <div class="hero-badge">🎵 岡田音楽教室</div>
-        <h2>生徒の個性を<br>最大限に引き出します</h2>
-        <p>ピアノを好きでいてくれるように🎹<br>人前でも自信を持って弾けるように🌟</p>
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-lines">
+      <span></span><span></span><span></span>
+    </div>
+    <div class="hero-content">
+      <div class="hero-slides">
+        <div class="hero-slide active">
+          <p class="hero-tag">Piano · Eurhythmics · Voice</p>
+          <h1 class="hero-title"><em>Okada</em><br>Music School</h1>
+          <span class="hero-title-ja">岡田音楽教室</span>
+          <div class="hero-rule"></div>
+          <p class="hero-desc">生徒の個性を最大限に引き出します<br>ピアノを好きでいてくれるように</p>
+          <a onclick="showPage('experience')" class="hero-cta"><span>体験レッスンのご予約</span><em class="hero-cta-arrow">→</em></a>
+        </div>
+        <div class="hero-slide">
+          <p class="hero-tag">Since 2020 — Kobe, Nishi</p>
+          <h1 class="hero-title">幼児から<br><em>大人まで</em></h1>
+          <span class="hero-title-ja">お一人おひとりに寄り添ったレッスンを</span>
+          <div class="hero-rule"></div>
+          <p class="hero-desc">ピアノコース・リトミックコース・声楽コース</p>
+        </div>
+        <div class="hero-slide">
+          <p class="hero-tag">Achievements</p>
+          <h1 class="hero-title">全国大会<br><em>入賞多数</em></h1>
+          <span class="hero-title-ja">ピティナ・ショパンコンクール in ASIA</span>
+          <div class="hero-rule"></div>
+          <p class="hero-desc">コンクール出場から音大受験まで</p>
+        </div>
+      </div>
+      <div class="hero-dots">
+        <button class="hero-dot active" data-idx="0"></button>
+        <button class="hero-dot" data-idx="1"></button>
+        <button class="hero-dot" data-idx="2"></button>
       </div>
     </div>
-    <div class="hero-slide">
-      <div class="hero-text">
-        <div class="hero-badge">🌸 幼児から大人まで</div>
-        <h2>ようこそ<br>岡田音楽教室へ</h2>
-        <p>ピアノ・リトミック・声楽コース<br>ご用意しております🎶</p>
-      </div>
-    </div>
-    <div class="hero-slide">
-      <div class="hero-text">
-        <div class="hero-badge">🏆 実績多数</div>
-        <h2>コンクール入賞者<br>続々輩出！</h2>
-        <p>ピティナ・ショパンコンクールin ASIAなど<br>全国大会での実績多数✨</p>
-      </div>
-    </div>
-    <div class="hero-dots">
-      <button class="hero-dot active" data-idx="0"></button>
-      <button class="hero-dot" data-idx="1"></button>
-      <button class="hero-dot" data-idx="2"></button>
+    <div class="hero-scroll">
+      <span>Scroll</span>
+      <div class="hero-scroll-line"></div>
     </div>
   </div>
 
   <div class="main-layout">
     <main>
-      <section>
-        <h2 class="section-title">ごあいさつ</h2>
-        <div class="card clearfix">
-          <div class="photo-placeholder">
-            <span>🎹</span>
-            <small>お写真を<br>こちらに</small>
+      <div class="section reveal">
+        <div class="section-head">
+          <span class="section-en">Greeting</span>
+          <h2 class="section-ja">ごあいさつ</h2>
+        </div>
+        <div class="box clearfix">
+          <div class="photo-ph">
+            <span style="font-size:1.2rem;opacity:.2">♪</span>
+            <span>お写真をこちらに</span>
           </div>
           <p>「生徒の持つ個性を最大限に引き出すこと」をモットーにレッスンしています。</p>
           <p>ピアノを好きでいてくれる様に。また、人前でも自信を持って弾ける様に。単なるピアノ指導にとどまることなく、生徒とのコミュニケーションを大切にしながら指導してまいります。</p>
         </div>
-      </section>
+      </div>
 
-      <section>
-        <h2 class="section-title">コンクール</h2>
-        <div class="card card-lav">
-          <p>表彰状やトロフィーをもらいたい！と、具体的な目標を持って努力する間に、不思議な位、実力や自信がつきます✨ コンクールは、自分の実力を測り、良いところや改善点を知る絶好のチャンスでもあります。</p>
-          <p style="margin-top:10px">それぞれのコンクールに出るからには、自信につながる結果になるよう、生徒達と一緒に、テクニックや豊かな音楽性を表現できるよう、コツコツ積み重ねてレッスンしています。幼児から大人まで受け付けております🎶</p>
-          <p style="margin-top:10px">音大・音高受験生には楽典・調音・ソルフェージュのレッスンも受け付けております。</p>
+      <div class="section reveal">
+        <div class="section-head">
+          <span class="section-en">Movie</span>
+          <h2 class="section-ja">動画でチェック</h2>
         </div>
-      </section>
-
-      <section>
-        <h2 class="section-title">動画でチェック！</h2>
-        <div class="card card-lav" style="text-align:center;">
-          <p style="font-size:.85rem; color:var(--text2); margin-bottom:16px;">🎵 レッスンの様子をYouTubeで配信中！</p>
-          <!--
-            ======== YouTube動画の差し替え方法 ========
-            YouTubeのURLが
-            https://www.youtube.com/watch?v=abc123XYZ
-            の場合、下の「abc123XYZ」の部分を書き換えるだけ！
-            ==========================================
-          -->
-          <iframe
-            width="100%"
-            height="400"
-            src="https://www.youtube.com/embed/abc123XYZ"
-            title="岡田音楽教室"
-            frameborder="0"
+        <div class="video-wrap">
+          <p class="video-label">YouTube — Lesson Preview</p>
+          <iframe width="100%" height="380"
+            src="https://www.youtube.com/embed/GCPRbWfd_H8"
+            title="岡田音楽教室" frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen
-            style="border-radius:16px; display:block;">
-          </iframe>
+            allowfullscreen></iframe>
         </div>
-      </section>
+      </div>
 
-      <section>
-        <h2 class="section-title">スクールニュース</h2>
-        <div class="card card-yellow">
-          <div class="school-news-badge">🎓 2022年 門下生の進学先</div>
+      <div class="section reveal">
+        <div class="section-head">
+          <span class="section-en">Competition</span>
+          <h2 class="section-ja">コンクール</h2>
+        </div>
+        <div class="box box-accent">
+          <p>表彰状やトロフィーをもらいたい！と、具体的な目標を持って努力する間に、不思議な位、実力や自信がつきます。コンクールは、自分の良いところや改善点を知る絶好のチャンスでもあります。</p>
+          <p>それぞれのコンクールに出るからには、自信につながる結果になるよう、生徒達と一緒に、テクニックや豊かな音楽性を表現できるよう、コツコツ積み重ねてレッスンしています。</p>
+          <p>音大・音高受験生には楽典・調音・ソルフェージュのレッスンも受け付けております。</p>
+        </div>
+      </div>
+
+      <div class="section reveal">
+        <div class="section-head">
+          <span class="section-en">News</span>
+          <h2 class="section-ja">スクールニュース</h2>
+        </div>
+        <div class="box">
+          <span class="news-year">2022 — 門下生の進学先</span>
           <ul class="news-list">
             <li>京都市立芸術大学ピアノ科 1名</li>
             <li>沖縄県立芸術大学ピアノ科 1名</li>
             <li>県立西宮高校音楽科 2名</li>
           </ul>
         </div>
-      </section>
+      </div>
     </main>
 
     <aside class="sidebar">
-      <div class="widget">
+      <div class="widget reveal reveal-delay-1">
         <div class="cta-area">
-          <a onclick="showPage('experience')" class="btn-cta primary">🎹 体験レッスンお申込み</a>
-          <a onclick="showPage('papamama')" class="btn-cta lav">🌸 パパママ会</a>
+          <a onclick="showPage('experience')" class="btn-cta btn-primary"><span>体験レッスンお申込み</span></a>
+          <a onclick="showPage('papamama')" class="btn-cta btn-outline"><span>パパママ会</span></a>
         </div>
       </div>
-      <div class="widget widget-mint">
-        <div class="widget-title widget-title-mint">📅 ブログカレンダー</div>
+      <div class="widget reveal reveal-delay-2">
+        <div class="widget-title">ブログカレンダー</div>
         <div class="widget-body">
           <table class="calendar">
             <caption>2026年3月</caption>
@@ -709,15 +851,15 @@
           </table>
         </div>
       </div>
-      <div class="widget">
-        <div class="widget-title">🌸 最近の投稿</div>
+      <div class="widget reveal reveal-delay-3">
+        <div class="widget-title">最近の投稿</div>
         <div class="widget-body">
           <ul class="recent-posts">
-            <li><a onclick="showPage('blog')">兵庫県中学校作曲コンクール入賞しました！</a><span class="post-date">2026年3月10日</span></li>
-            <li><a onclick="showPage('blog')">生徒が、県立西宮高校音楽科に合格しました！</a><span class="post-date">2026年3月5日</span></li>
-            <li><a onclick="showPage('blog')">ショパンコンクールインアジア大会で入賞おめでとうございます。</a><span class="post-date">2026年1月28日</span></li>
-            <li><a onclick="showPage('blog')">学年1位になり大学のコンチェルトのソリストに選ばれました！</a><span class="post-date">2026年1月15日</span></li>
-            <li><a onclick="showPage('blog')">バスティンコンクール金賞受賞おめでとうございます!</a><span class="post-date">2025年12月22日</span></li>
+            <li><a onclick="showPage('blog')">兵庫県中学校作曲コンクール入賞しました！</a><span class="post-date">2026.03.10</span></li>
+            <li><a onclick="showPage('blog')">生徒が、県立西宮高校音楽科に合格しました！</a><span class="post-date">2026.03.05</span></li>
+            <li><a onclick="showPage('blog')">ショパンコンクールインアジア大会で入賞おめでとうございます。</a><span class="post-date">2026.01.28</span></li>
+            <li><a onclick="showPage('blog')">学年1位になり大学のコンチェルトのソリストに選ばれました！</a><span class="post-date">2026.01.15</span></li>
+            <li><a onclick="showPage('blog')">バスティンコンクール金賞受賞おめでとうございます!</a><span class="post-date">2025.12.22</span></li>
           </ul>
         </div>
       </div>
@@ -727,72 +869,72 @@
 
 <!-- ===================== 教室理念 ===================== -->
 <div id="page-credo" class="page">
-  <div class="page-header"><h1>教室理念・方針</h1></div>
+  <div class="page-header"><div class="page-header-inner">
+    <span class="page-header-en">Philosophy</span><h1>教室理念・方針</h1>
+  </div></div>
   <div class="main-layout">
     <main class="page-content">
-      <h2>🎵 教室理念</h2>
-      <div class="card">
+      <h2>教室理念</h2>
+      <div class="box box-accent reveal">
         <p><strong>音楽を一生の友としていけるように生徒を育てます</strong></p>
         <p>どんな御子様も、笑顔一杯のリトルピニストになれる素質をお持ちです！譜読みやリズムの訓練と共に、ステージで演奏するからこそ培われる表現力があります。</p>
-        <p>コンクールに出ても予選落ちてばかりで…という生徒様も、岡田音楽教室に入門されてからどんどん上達し、芸高や芸大に進まれた方もいらっしゃいます。お一人お一人の個性や希望を随時お聞きし、常にその時々の最善の方法でレッスンいたします。</p>
-        <p>私の息子は東京大学に進学し、立派な社会人として巣立ちました。幼少期のリトミックやピアノが集中力や自制心を育むことができ、東大進学に至ったと思います。この経験を、当教室で習う生徒様に活かしていけたらと思います。</p>
-        <p style="text-align:right; font-weight:700; color:var(--pink2);">岡田音楽教室代表　岡田裕子 🌸</p>
+        <p>コンクールに出ても予選落ちてばかりで…という生徒様も、岡田音楽教室に入門されてからどんどん上達し、芸高や芸大に進まれた方もいらっしゃいます。</p>
+        <p>私の息子は東京大学に進学し、立派な社会人として巣立ちました。幼少期のリトミックやピアノが集中力や自制心を育むことができ、東大進学に至ったと思います。</p>
+        <p style="text-align:right; color:var(--text2); letter-spacing:.1em; margin-top:8px;">岡田音楽教室代表　岡田裕子</p>
       </div>
-      <h2>✨ レッスン方針</h2>
-      <div class="card card-mint">
+      <h2>レッスン方針</h2>
+      <div class="box reveal">
         <h3>生徒様ひとりひとりの個性を伸ばします</h3>
         <p>生徒様ひとりひとりはそれぞれ素晴らしい音楽的個性をお持ちです。その個性を引き出し、表現豊かな演奏となるようにレッスンいたします。</p>
         <h3>生徒様ひとりひとりの音楽的楽しみを尊重します</h3>
         <p>音楽の楽しみ方は様々です。想い通りに弾けた実感したときは、例えようのない幸せな気分になりますね。岡田音楽教室では生徒様ひとりひとりの音楽的楽しみを尊重し、想いが叶うようにレッスンいたします。</p>
         <h3>ピアノと学業の両立を図ります</h3>
-        <p>ご希望の方にはピアノだけではなく、当教室併設の学研教室にもご案内しております。幼児から高校受験生まで幅広く対応しておりますのでぜひご検討ください。</p>
+        <p>ご希望の方にはピアノだけではなく、当教室併設の学研教室にもご案内しております。</p>
       </div>
     </main>
     <aside class="sidebar">
       <div class="widget"><div class="cta-area">
-        <a onclick="showPage('experience')" class="btn-cta primary">🎹 体験レッスンお申込み</a>
-        <a onclick="showPage('papamama')" class="btn-cta lav">🌸 パパママ会</a>
+        <a onclick="showPage('experience')" class="btn-cta btn-primary"><span>体験レッスンお申込み</span></a>
+        <a onclick="showPage('papamama')" class="btn-cta btn-outline"><span>パパママ会</span></a>
       </div></div>
-      <div class="widget"><div class="widget-title">📚 教室案内</div>
-        <ul class="sidebar-nav">
-          <li><a onclick="showPage('credo')">教室理念・方針</a></li>
-          <li><a onclick="showPage('profile')">プロフィール</a></li>
-          <li><a onclick="showPage('piano')">ピアノコース</a></li>
-          <li><a onclick="showPage('rhythmics')">リトミックコース</a></li>
-          <li><a onclick="showPage('voice')">声楽コース</a></li>
-          <li><a onclick="showPage('place')">レッスン場所</a></li>
-          <li><a onclick="showPage('reviews')">生徒の声</a></li>
-          <li><a onclick="showPage('study')">学習塾</a></li>
-        </ul>
-      </div>
+      <div class="widget"><div class="widget-title">教室案内</div><ul class="sidebar-nav">
+        <li><a onclick="showPage('credo')">教室理念・方針</a></li>
+        <li><a onclick="showPage('profile')">プロフィール</a></li>
+        <li><a onclick="showPage('piano')">ピアノコース</a></li>
+        <li><a onclick="showPage('rhythmics')">リトミックコース</a></li>
+        <li><a onclick="showPage('voice')">声楽コース</a></li>
+        <li><a onclick="showPage('place')">レッスン場所</a></li>
+        <li><a onclick="showPage('reviews')">生徒の声</a></li>
+        <li><a onclick="showPage('study')">学習塾</a></li>
+      </ul></div>
     </aside>
   </div>
 </div>
 
 <!-- ===================== プロフィール ===================== -->
 <div id="page-profile" class="page">
-  <div class="page-header"><h1>プロフィール</h1></div>
+  <div class="page-header"><div class="page-header-inner">
+    <span class="page-header-en">Profile</span><h1>プロフィール</h1>
+  </div></div>
   <div class="main-layout">
     <main class="page-content">
-      <h2>🎹 岡田 裕子（Hiroko Okada）</h2>
-      <div class="card clearfix">
-        <div class="photo-placeholder" style="float:left; margin:0 20px 16px 0; width:160px; height:200px;">
-          <span>👩‍🎹</span><small>プロフィール<br>写真</small>
-        </div>
+      <h2>岡田 裕子 — Hiroko Okada</h2>
+      <div class="box clearfix reveal">
+        <div class="photo-ph photo-ph-left"><span style="font-size:1rem;opacity:.2">♪</span><span>プロフィール写真</span></div>
         <h3>経歴</h3>
-        <ul class="cute-list">
+        <ul class="refined-list">
           <li>神戸女学院大学音楽学部卒業</li>
           <li>神戸西南ステーション代表</li>
-          <li>ピティナコンペティション全国大会審査員、ステップアドバイザー</li>
+          <li>ピティナコンペティション全国大会審査員・ステップアドバイザー</li>
           <li>ショパン国際ピアノコンクール in ASIA 審査員</li>
           <li>クラシックコンクール審査員</li>
         </ul>
       </div>
-      <h2>🏆 指導実績</h2>
-      <div class="card card-lav">
-        <ul class="cute-list">
+      <h2>指導実績</h2>
+      <div class="box reveal">
+        <ul class="refined-list">
           <li>ピティナピアノコンペティション — A2級全国大会優秀賞、B級金・銀・銅賞、グランミューズYB級全国大会1位 ほか多数</li>
-          <li>兵庫県学生ピアノコンクール — 最優秀賞、兵庫県知事賞、NHK神戸放送局長賞 等受賞</li>
+          <li>兵庫県学生ピアノコンクール — 最優秀賞・兵庫県知事賞・NHK神戸放送局長賞 等</li>
           <li>ショパンコンクール in ASIA アジア大会金賞</li>
           <li>長江杯国際音楽コンクール中学生の部第1位及び審査員特別賞</li>
           <li>グレンツェンピアノコンクール金賞・銀賞・銅賞</li>
@@ -803,317 +945,222 @@
       </div>
     </main>
     <aside class="sidebar">
-      <div class="widget"><div class="cta-area">
-        <a onclick="showPage('experience')" class="btn-cta primary">🎹 体験レッスンお申込み</a>
-      </div></div>
-      <div class="widget"><div class="widget-title">📚 教室案内</div>
-        <ul class="sidebar-nav">
-          <li><a onclick="showPage('credo')">教室理念・方針</a></li>
-          <li><a onclick="showPage('profile')">プロフィール</a></li>
-          <li><a onclick="showPage('piano')">ピアノコース</a></li>
-          <li><a onclick="showPage('rhythmics')">リトミックコース</a></li>
-          <li><a onclick="showPage('voice')">声楽コース</a></li>
-          <li><a onclick="showPage('place')">レッスン場所</a></li>
-          <li><a onclick="showPage('reviews')">生徒の声</a></li>
-          <li><a onclick="showPage('study')">学習塾</a></li>
-        </ul>
-      </div>
+      <div class="widget"><div class="cta-area"><a onclick="showPage('experience')" class="btn-cta btn-primary"><span>体験レッスンお申込み</span></a></div></div>
+      <div class="widget"><div class="widget-title">教室案内</div><ul class="sidebar-nav">
+        <li><a onclick="showPage('credo')">教室理念・方針</a></li><li><a onclick="showPage('profile')">プロフィール</a></li>
+        <li><a onclick="showPage('piano')">ピアノコース</a></li><li><a onclick="showPage('rhythmics')">リトミックコース</a></li>
+        <li><a onclick="showPage('voice')">声楽コース</a></li><li><a onclick="showPage('place')">レッスン場所</a></li>
+        <li><a onclick="showPage('reviews')">生徒の声</a></li><li><a onclick="showPage('study')">学習塾</a></li>
+      </ul></div>
     </aside>
   </div>
 </div>
 
 <!-- ===================== ピアノコース ===================== -->
 <div id="page-piano" class="page">
-  <div class="page-header"><h1>ピアノコース</h1></div>
+  <div class="page-header"><div class="page-header-inner"><span class="page-header-en">Piano Course</span><h1>ピアノコース</h1></div></div>
   <div class="main-layout">
     <main class="page-content">
-      <h2>🎹 コースのご案内</h2>
-      <div class="card">
-        <p>幼児から大人の方まで、初心者から上級者まで幅広く対応しております。お一人お一人の目標や個性に合わせたカリキュラムで丁寧に指導いたします✨</p>
-        <h3>レッスン内容</h3>
-        <ul class="cute-list">
-          <li>基礎テクニック・音楽理論・ソルフェージュ</li>
-          <li>曲の解釈・表現力の向上</li>
-          <li>コンクール出場サポート</li>
-          <li>音大・音高受験対策</li>
-        </ul>
-      </div>
-      <h2>💰 料金（月謝）</h2>
-      <table class="cute-table">
+      <h2>コースのご案内</h2>
+      <p class="reveal">幼児から大人の方まで、初心者から上級者まで幅広く対応しております。</p>
+      <h3>レッスン内容</h3>
+      <ul class="refined-list reveal">
+        <li>基礎テクニック・音楽理論・ソルフェージュ</li>
+        <li>曲の解釈・表現力の向上</li>
+        <li>コンクール出場サポート</li>
+        <li>音大・音高受験対策</li>
+      </ul>
+      <h2>料金（月謝）</h2>
+      <table class="elegant-table reveal">
         <thead><tr><th>コース</th><th>時間</th><th>月謝</th></tr></thead>
         <tbody>
-          <tr><td>幼児・小学生（初級）</td><td>30分/回</td><td>お問い合わせください</td></tr>
-          <tr><td>小学生（中・上級）</td><td>45分/回</td><td>お問い合わせください</td></tr>
-          <tr><td>中学生・高校生</td><td>60分/回</td><td>お問い合わせください</td></tr>
-          <tr><td>大人</td><td>60分/回</td><td>お問い合わせください</td></tr>
+          <tr><td>幼児・小学生（初級）</td><td>30分 / 回</td><td>お問い合わせください</td></tr>
+          <tr><td>小学生（中・上級）</td><td>45分 / 回</td><td>お問い合わせください</td></tr>
+          <tr><td>中学生・高校生</td><td>60分 / 回</td><td>お問い合わせください</td></tr>
+          <tr><td>大人</td><td>60分 / 回</td><td>お問い合わせください</td></tr>
         </tbody>
       </table>
-      <p style="font-size:.83rem; color:var(--text2);">※入会金・テキスト代別途。詳細はお問い合わせください。</p>
+      <p style="font-size:.78rem; color:var(--text3); letter-spacing:.08em;">※ 入会金・テキスト代別途。</p>
     </main>
     <aside class="sidebar">
-      <div class="widget"><div class="cta-area">
-        <a onclick="showPage('experience')" class="btn-cta primary">🎹 体験レッスンお申込み</a>
-      </div></div>
-      <div class="widget"><div class="widget-title">📚 教室案内</div>
-        <ul class="sidebar-nav">
-          <li><a onclick="showPage('credo')">教室理念・方針</a></li>
-          <li><a onclick="showPage('profile')">プロフィール</a></li>
-          <li><a onclick="showPage('piano')">ピアノコース</a></li>
-          <li><a onclick="showPage('rhythmics')">リトミックコース</a></li>
-          <li><a onclick="showPage('voice')">声楽コース</a></li>
-          <li><a onclick="showPage('place')">レッスン場所</a></li>
-          <li><a onclick="showPage('reviews')">生徒の声</a></li>
-          <li><a onclick="showPage('study')">学習塾</a></li>
-        </ul>
-      </div>
+      <div class="widget"><div class="cta-area"><a onclick="showPage('experience')" class="btn-cta btn-primary"><span>体験レッスンお申込み</span></a></div></div>
+      <div class="widget"><div class="widget-title">教室案内</div><ul class="sidebar-nav">
+        <li><a onclick="showPage('credo')">教室理念・方針</a></li><li><a onclick="showPage('profile')">プロフィール</a></li>
+        <li><a onclick="showPage('piano')">ピアノコース</a></li><li><a onclick="showPage('rhythmics')">リトミックコース</a></li>
+        <li><a onclick="showPage('voice')">声楽コース</a></li><li><a onclick="showPage('place')">レッスン場所</a></li>
+        <li><a onclick="showPage('reviews')">生徒の声</a></li><li><a onclick="showPage('study')">学習塾</a></li>
+      </ul></div>
     </aside>
   </div>
 </div>
 
 <!-- ===================== リトミック ===================== -->
 <div id="page-rhythmics" class="page">
-  <div class="page-header"><h1>リトミックコース</h1></div>
+  <div class="page-header"><div class="page-header-inner"><span class="page-header-en">Eurhythmics</span><h1>リトミックコース</h1></div></div>
   <div class="main-layout">
     <main class="page-content">
-      <h2>🎶 リトミックとは？</h2>
-      <div class="card card-mint">
-        <p>リトミックは、スイスの音楽教育家エミール・ジャック＝ダルクローズが考案した音楽教育法です。音楽に合わせて体を動かすことで、音楽的感受性・リズム感・集中力・表現力を育みます🌱</p>
-      </div>
-      <h2>🌸 対象・レッスン内容</h2>
-      <div class="card">
-        <h3>対象年齢</h3>
-        <p>0歳〜就学前のお子様。親子での参加も大歓迎です！</p>
-        <h3>レッスン内容</h3>
-        <ul class="cute-list">
-          <li>音楽に合わせた身体表現・リズム遊び</li>
-          <li>音の高低・強弱・速さの聴き分け</li>
-          <li>歌唱・楽器体験</li>
-          <li>音楽的想像力と創造性の開発</li>
-        </ul>
-      </div>
+      <h2>リトミックとは</h2>
+      <p class="reveal">スイスの音楽教育家エミール・ジャック＝ダルクローズが考案した音楽教育法です。音楽に合わせて体を動かすことで、音楽的感受性・リズム感・集中力・表現力を育みます。</p>
+      <h2>対象・レッスン内容</h2>
+      <h3>対象年齢</h3><p>0歳〜就学前のお子様。親子での参加も歓迎しております。</p>
+      <h3>レッスン内容</h3>
+      <ul class="refined-list reveal">
+        <li>音楽に合わせた身体表現・リズム遊び</li>
+        <li>音の高低・強弱・速さの聴き分け</li>
+        <li>歌唱・楽器体験</li>
+        <li>音楽的想像力と創造性の開発</li>
+      </ul>
     </main>
     <aside class="sidebar">
-      <div class="widget"><div class="cta-area">
-        <a onclick="showPage('experience')" class="btn-cta primary">🎹 体験レッスンお申込み</a>
-      </div></div>
-      <div class="widget"><div class="widget-title">📚 教室案内</div>
-        <ul class="sidebar-nav">
-          <li><a onclick="showPage('credo')">教室理念・方針</a></li>
-          <li><a onclick="showPage('profile')">プロフィール</a></li>
-          <li><a onclick="showPage('piano')">ピアノコース</a></li>
-          <li><a onclick="showPage('rhythmics')">リトミックコース</a></li>
-          <li><a onclick="showPage('voice')">声楽コース</a></li>
-          <li><a onclick="showPage('place')">レッスン場所</a></li>
-          <li><a onclick="showPage('reviews')">生徒の声</a></li>
-          <li><a onclick="showPage('study')">学習塾</a></li>
-        </ul>
-      </div>
+      <div class="widget"><div class="cta-area"><a onclick="showPage('experience')" class="btn-cta btn-primary"><span>体験レッスンお申込み</span></a></div></div>
+      <div class="widget"><div class="widget-title">教室案内</div><ul class="sidebar-nav">
+        <li><a onclick="showPage('credo')">教室理念・方針</a></li><li><a onclick="showPage('profile')">プロフィール</a></li>
+        <li><a onclick="showPage('piano')">ピアノコース</a></li><li><a onclick="showPage('rhythmics')">リトミックコース</a></li>
+        <li><a onclick="showPage('voice')">声楽コース</a></li><li><a onclick="showPage('place')">レッスン場所</a></li>
+        <li><a onclick="showPage('reviews')">生徒の声</a></li><li><a onclick="showPage('study')">学習塾</a></li>
+      </ul></div>
     </aside>
   </div>
 </div>
 
 <!-- ===================== 声楽 ===================== -->
 <div id="page-voice" class="page">
-  <div class="page-header"><h1>声楽コース</h1></div>
+  <div class="page-header"><div class="page-header-inner"><span class="page-header-en">Vocal Course</span><h1>声楽コース</h1></div></div>
   <div class="main-layout">
     <main class="page-content">
-      <h2>🎤 声楽コースのご案内</h2>
-      <div class="card card-lav">
-        <p>正しい発声法の習得から、ドイツ歌曲・イタリア歌曲・日本歌曲・オペラアリアまで、幅広いレパートリーに対応します。音大・音高受験対策も行っております🌟</p>
-        <h3>対象</h3>
-        <p>中学生以上の方。初心者から音大受験を目指す方まで歓迎します。</p>
-        <h3>レッスン内容</h3>
-        <ul class="cute-list">
-          <li>発声・呼吸法の基礎訓練</li>
-          <li>ドイツ・イタリア・日本語の発音指導</li>
-          <li>楽曲の解釈と表現</li>
-          <li>ソルフェージュ・音楽理論</li>
-        </ul>
-      </div>
+      <h2>声楽コースのご案内</h2>
+      <p class="reveal">正しい発声法の習得から、ドイツ歌曲・イタリア歌曲・日本歌曲・オペラアリアまで幅広いレパートリーに対応します。音大・音高受験対策も行っております。</p>
+      <h3>対象</h3><p>中学生以上の方。初心者から音大受験を目指す方まで歓迎します。</p>
+      <h3>レッスン内容</h3>
+      <ul class="refined-list reveal">
+        <li>発声・呼吸法の基礎訓練</li>
+        <li>ドイツ・イタリア・日本語の発音指導</li>
+        <li>楽曲の解釈と表現</li>
+        <li>ソルフェージュ・音楽理論</li>
+      </ul>
     </main>
     <aside class="sidebar">
-      <div class="widget"><div class="cta-area">
-        <a onclick="showPage('experience')" class="btn-cta primary">🎹 体験レッスンお申込み</a>
-      </div></div>
-      <div class="widget"><div class="widget-title">📚 教室案内</div>
-        <ul class="sidebar-nav">
-          <li><a onclick="showPage('credo')">教室理念・方針</a></li>
-          <li><a onclick="showPage('profile')">プロフィール</a></li>
-          <li><a onclick="showPage('piano')">ピアノコース</a></li>
-          <li><a onclick="showPage('rhythmics')">リトミックコース</a></li>
-          <li><a onclick="showPage('voice')">声楽コース</a></li>
-          <li><a onclick="showPage('place')">レッスン場所</a></li>
-          <li><a onclick="showPage('reviews')">生徒の声</a></li>
-          <li><a onclick="showPage('study')">学習塾</a></li>
-        </ul>
-      </div>
+      <div class="widget"><div class="cta-area"><a onclick="showPage('experience')" class="btn-cta btn-primary"><span>体験レッスンお申込み</span></a></div></div>
+      <div class="widget"><div class="widget-title">教室案内</div><ul class="sidebar-nav">
+        <li><a onclick="showPage('credo')">教室理念・方針</a></li><li><a onclick="showPage('profile')">プロフィール</a></li>
+        <li><a onclick="showPage('piano')">ピアノコース</a></li><li><a onclick="showPage('rhythmics')">リトミックコース</a></li>
+        <li><a onclick="showPage('voice')">声楽コース</a></li><li><a onclick="showPage('place')">レッスン場所</a></li>
+        <li><a onclick="showPage('reviews')">生徒の声</a></li><li><a onclick="showPage('study')">学習塾</a></li>
+      </ul></div>
     </aside>
   </div>
 </div>
 
 <!-- ===================== レッスン場所 ===================== -->
 <div id="page-place" class="page">
-  <div class="page-header"><h1>レッスン場所</h1></div>
+  <div class="page-header"><div class="page-header-inner"><span class="page-header-en">Access</span><h1>レッスン場所</h1></div></div>
   <div class="main-layout">
     <main class="page-content">
-      <h2>📍 教室所在地</h2>
-      <div class="card">
-        <p>〒651-2271<br>兵庫県神戸市西区（詳細はお問い合わせください）</p>
-        <div class="map-ph">
-          <div class="map-icon">📍</div>
-          <p>地図はこちらに埋め込み予定</p>
-          <small>Google Maps の iframe を貼り付けてください</small>
-        </div>
-      </div>
-      <h2>🚗 アクセス・時間帯</h2>
-      <div class="card card-mint">
-        <h3>アクセス</h3>
-        <ul class="cute-list">
-          <li>お車でお越しの方：駐車場あり</li>
-          <li>公共交通機関でお越しの方：詳細はお問い合わせください</li>
-        </ul>
-        <h3 style="margin-top:14px">レッスン時間帯</h3>
-        <table class="cute-table">
-          <thead><tr><th>曜日</th><th>時間</th></tr></thead>
-          <tbody>
-            <tr><td>月〜金</td><td>14:00 〜 21:00</td></tr>
-            <tr><td>土</td><td>10:00 〜 18:00</td></tr>
-            <tr><td>日・祝</td><td>応相談</td></tr>
-          </tbody>
-        </table>
-      </div>
+      <h2>教室所在地</h2>
+      <div class="box reveal"><p>〒651-2271<br>兵庫県神戸市西区（詳細はお問い合わせください）</p></div>
+      <div class="map-ph reveal">地図はこちらに埋め込み予定<br><small style="font-size:.72rem;">Google Maps の iframe を貼り付けてください</small></div>
+      <h2>アクセス・時間帯</h2>
+      <h3>アクセス</h3>
+      <ul class="refined-list reveal">
+        <li>お車でお越しの方：駐車場あり</li>
+        <li>公共交通機関でお越しの方：詳細はお問い合わせください</li>
+      </ul>
+      <h3>レッスン時間帯</h3>
+      <table class="elegant-table reveal">
+        <thead><tr><th>曜日</th><th>時間</th></tr></thead>
+        <tbody>
+          <tr><td>月〜金</td><td>14:00 〜 21:00</td></tr>
+          <tr><td>土</td><td>10:00 〜 18:00</td></tr>
+          <tr><td>日・祝</td><td>応相談</td></tr>
+        </tbody>
+      </table>
     </main>
     <aside class="sidebar">
-      <div class="widget"><div class="cta-area">
-        <a onclick="showPage('experience')" class="btn-cta primary">🎹 体験レッスンお申込み</a>
-      </div></div>
-      <div class="widget"><div class="widget-title">📚 教室案内</div>
-        <ul class="sidebar-nav">
-          <li><a onclick="showPage('credo')">教室理念・方針</a></li>
-          <li><a onclick="showPage('profile')">プロフィール</a></li>
-          <li><a onclick="showPage('piano')">ピアノコース</a></li>
-          <li><a onclick="showPage('rhythmics')">リトミックコース</a></li>
-          <li><a onclick="showPage('voice')">声楽コース</a></li>
-          <li><a onclick="showPage('place')">レッスン場所</a></li>
-          <li><a onclick="showPage('reviews')">生徒の声</a></li>
-          <li><a onclick="showPage('study')">学習塾</a></li>
-        </ul>
-      </div>
+      <div class="widget"><div class="cta-area"><a onclick="showPage('experience')" class="btn-cta btn-primary"><span>体験レッスンお申込み</span></a></div></div>
+      <div class="widget"><div class="widget-title">教室案内</div><ul class="sidebar-nav">
+        <li><a onclick="showPage('credo')">教室理念・方針</a></li><li><a onclick="showPage('profile')">プロフィール</a></li>
+        <li><a onclick="showPage('piano')">ピアノコース</a></li><li><a onclick="showPage('rhythmics')">リトミックコース</a></li>
+        <li><a onclick="showPage('voice')">声楽コース</a></li><li><a onclick="showPage('place')">レッスン場所</a></li>
+        <li><a onclick="showPage('reviews')">生徒の声</a></li><li><a onclick="showPage('study')">学習塾</a></li>
+      </ul></div>
     </aside>
   </div>
 </div>
 
 <!-- ===================== 生徒の声 ===================== -->
 <div id="page-reviews" class="page">
-  <div class="page-header"><h1>生徒の声</h1></div>
+  <div class="page-header"><div class="page-header-inner"><span class="page-header-en">Reviews</span><h1>生徒の声</h1></div></div>
   <div class="main-layout">
     <main class="page-content">
-      <h2>💬 生徒・保護者の声</h2>
-      <div class="voice-card">
-        <div class="voice-meta">🌸 小学3年生 保護者様</div>
-        <p>入会前はピアノを怖がっていた子が、今では毎日自分から練習するようになりました。先生の指導はとても温かく、子どもの個性を引き出してくださっています。</p>
-      </div>
-      <div class="voice-card">
-        <div class="voice-meta">🌸 中学2年生 保護者様</div>
-        <p>コンクールで初めて賞をいただいた時、子どもが泣いて喜んでいました。先生が一緒に頑張ってくださったおかげです。</p>
-      </div>
-      <div class="voice-card">
-        <div class="voice-meta">🌸 高校3年生（音大受験生）</div>
-        <p>他の教室では通らなかった音大に合格できました。先生の的確なご指導と励ましが自信につながりました✨</p>
-      </div>
-      <div class="voice-card">
-        <div class="voice-meta">🌸 大人の生徒様</div>
-        <p>社会人になってから始めましたが、先生が丁寧に教えてくださるので少しずつ弾けるようになってきました。音楽が生活の潤いになっています🎵</p>
-      </div>
+      <h2>生徒・保護者の声</h2>
+      <div class="voice-item reveal"><p class="voice-meta">小学3年生 保護者様</p><p>入会前はピアノを怖がっていた子が、今では毎日自分から練習するようになりました。先生の指導はとても温かく、子どもの個性を引き出してくださっています。</p></div>
+      <div class="voice-item reveal"><p class="voice-meta">中学2年生 保護者様</p><p>コンクールで初めて賞をいただいた時、子どもが泣いて喜んでいました。先生が一緒に頑張ってくださったおかげです。</p></div>
+      <div class="voice-item reveal"><p class="voice-meta">高校3年生（音大受験生）</p><p>他の教室では通らなかった音大に合格できました。先生の的確なご指導と励ましが自信につながりました。</p></div>
+      <div class="voice-item reveal"><p class="voice-meta">大人の生徒様</p><p>社会人になってから始めましたが、先生が丁寧に教えてくださるので少しずつ弾けるようになってきました。音楽が生活の潤いになっています。</p></div>
     </main>
     <aside class="sidebar">
-      <div class="widget"><div class="cta-area">
-        <a onclick="showPage('experience')" class="btn-cta primary">🎹 体験レッスンお申込み</a>
-      </div></div>
-      <div class="widget"><div class="widget-title">📚 教室案内</div>
-        <ul class="sidebar-nav">
-          <li><a onclick="showPage('credo')">教室理念・方針</a></li>
-          <li><a onclick="showPage('profile')">プロフィール</a></li>
-          <li><a onclick="showPage('piano')">ピアノコース</a></li>
-          <li><a onclick="showPage('rhythmics')">リトミックコース</a></li>
-          <li><a onclick="showPage('voice')">声楽コース</a></li>
-          <li><a onclick="showPage('place')">レッスン場所</a></li>
-          <li><a onclick="showPage('reviews')">生徒の声</a></li>
-          <li><a onclick="showPage('study')">学習塾</a></li>
-        </ul>
-      </div>
+      <div class="widget"><div class="cta-area"><a onclick="showPage('experience')" class="btn-cta btn-primary"><span>体験レッスンお申込み</span></a></div></div>
+      <div class="widget"><div class="widget-title">教室案内</div><ul class="sidebar-nav">
+        <li><a onclick="showPage('credo')">教室理念・方針</a></li><li><a onclick="showPage('profile')">プロフィール</a></li>
+        <li><a onclick="showPage('piano')">ピアノコース</a></li><li><a onclick="showPage('rhythmics')">リトミックコース</a></li>
+        <li><a onclick="showPage('voice')">声楽コース</a></li><li><a onclick="showPage('place')">レッスン場所</a></li>
+        <li><a onclick="showPage('reviews')">生徒の声</a></li><li><a onclick="showPage('study')">学習塾</a></li>
+      </ul></div>
     </aside>
   </div>
 </div>
 
 <!-- ===================== 学習塾 ===================== -->
 <div id="page-study" class="page">
-  <div class="page-header"><h1>学習塾（学研教室）</h1></div>
+  <div class="page-header"><div class="page-header-inner"><span class="page-header-en">Study Support</span><h1>学習塾（学研教室）</h1></div></div>
   <div class="main-layout">
     <main class="page-content">
-      <h2>📖 ピアノと学業の両立を</h2>
-      <div class="card card-yellow">
-        <p>岡田音楽教室では、ピアノ教室に併設して学研教室を運営しております。ピアノと学業の両方に取り組みたいお子様をサポートします📚</p>
-      </div>
-      <h2>✏️ 対応科目・特長</h2>
-      <div class="card">
-        <h3>対応科目・範囲</h3>
-        <ul class="cute-list">
-          <li>国語・算数・数学・英語</li>
-          <li>幼児〜高校受験生まで対応</li>
-          <li>学校の授業補習から受験対策まで</li>
-        </ul>
-        <h3>学研教室の特長</h3>
-        <p>一人ひとりの学習進度に合わせたオリジナルの教材を使用します。ピアノレッスンの日に学習塾のレッスンも合わせてご受講いただくことも可能ですので、送り迎えの負担も軽減できます🌟</p>
-      </div>
+      <h2>ピアノと学業の両立を</h2>
+      <p class="reveal">岡田音楽教室では、ピアノ教室に併設して学研教室を運営しております。</p>
+      <h3>対応科目・範囲</h3>
+      <ul class="refined-list reveal">
+        <li>国語・算数・数学・英語</li>
+        <li>幼児〜高校受験生まで対応</li>
+        <li>学校の授業補習から受験対策まで</li>
+      </ul>
+      <h3>特長</h3>
+      <p class="reveal">一人ひとりの学習進度に合わせたオリジナルの教材を使用します。ピアノレッスンの日に合わせてご受講いただけますので、送り迎えの負担も軽減できます。</p>
     </main>
     <aside class="sidebar">
-      <div class="widget"><div class="cta-area">
-        <a onclick="showPage('experience')" class="btn-cta primary">🎹 体験レッスンお申込み</a>
-      </div></div>
-      <div class="widget"><div class="widget-title">📚 教室案内</div>
-        <ul class="sidebar-nav">
-          <li><a onclick="showPage('credo')">教室理念・方針</a></li>
-          <li><a onclick="showPage('profile')">プロフィール</a></li>
-          <li><a onclick="showPage('piano')">ピアノコース</a></li>
-          <li><a onclick="showPage('rhythmics')">リトミックコース</a></li>
-          <li><a onclick="showPage('voice')">声楽コース</a></li>
-          <li><a onclick="showPage('place')">レッスン場所</a></li>
-          <li><a onclick="showPage('reviews')">生徒の声</a></li>
-          <li><a onclick="showPage('study')">学習塾</a></li>
-        </ul>
-      </div>
+      <div class="widget"><div class="cta-area"><a onclick="showPage('experience')" class="btn-cta btn-primary"><span>体験レッスンお申込み</span></a></div></div>
+      <div class="widget"><div class="widget-title">教室案内</div><ul class="sidebar-nav">
+        <li><a onclick="showPage('credo')">教室理念・方針</a></li><li><a onclick="showPage('profile')">プロフィール</a></li>
+        <li><a onclick="showPage('piano')">ピアノコース</a></li><li><a onclick="showPage('rhythmics')">リトミックコース</a></li>
+        <li><a onclick="showPage('voice')">声楽コース</a></li><li><a onclick="showPage('place')">レッスン場所</a></li>
+        <li><a onclick="showPage('reviews')">生徒の声</a></li><li><a onclick="showPage('study')">学習塾</a></li>
+      </ul></div>
     </aside>
   </div>
 </div>
 
 <!-- ===================== パパママ会 ===================== -->
 <div id="page-papamama" class="page">
-  <div class="page-header"><h1>パパママ会</h1></div>
+  <div class="page-header"><div class="page-header-inner"><span class="page-header-en">Parents Community</span><h1>パパママ会</h1></div></div>
   <div class="main-layout">
     <main class="page-content">
-      <div class="papa-box">
-        <div class="pi">👨‍👩‍👧‍👦</div>
+      <div class="papa-intro reveal">
         <h3>保護者同士のつながりを大切に</h3>
-        <p>岡田音楽教室では、生徒の保護者様同士が交流できる「パパママ会」を定期的に開催しています🌸</p>
+        <p>岡田音楽教室では、保護者様同士が交流できる「パパママ会」を定期的に開催しています。</p>
       </div>
-      <h2>🍵 パパママ会について</h2>
-      <div class="card">
-        <p>音楽教育に関する情報交換や、子育ての悩みを気軽に話し合える場としてご活用ください。先生を囲んでのティータイムなど、和やかな雰囲気で開催しています☕</p>
-        <h3>開催内容（例）</h3>
-        <ul class="cute-list">
-          <li>コンクール情報・受験対策に関する説明会</li>
-          <li>発表会の運営打ち合わせ</li>
-          <li>保護者同士の交流・懇親会</li>
-          <li>先生への個別相談コーナー</li>
-        </ul>
-        <p style="margin-top:14px; font-size:.88rem; color:var(--text2);">次回の開催日程はブログにてお知らせします。</p>
-      </div>
+      <h2>パパママ会について</h2>
+      <p class="reveal">音楽教育に関する情報交換や、子育ての悩みを気軽に話し合える場としてご活用ください。</p>
+      <h3>開催内容（例）</h3>
+      <ul class="refined-list reveal">
+        <li>コンクール情報・受験対策に関する説明会</li>
+        <li>発表会の運営打ち合わせ</li>
+        <li>保護者同士の交流・懇親会</li>
+        <li>先生への個別相談コーナー</li>
+      </ul>
     </main>
     <aside class="sidebar">
       <div class="widget"><div class="cta-area">
-        <a onclick="showPage('experience')" class="btn-cta primary">🎹 体験レッスンお申込み</a>
-        <a onclick="showPage('blog')" class="btn-cta mint">📝 ブログを見る</a>
+        <a onclick="showPage('experience')" class="btn-cta btn-primary"><span>体験レッスンお申込み</span></a>
+        <a onclick="showPage('blog')" class="btn-cta btn-outline"><span>ブログを見る</span></a>
       </div></div>
     </aside>
   </div>
@@ -1121,100 +1168,67 @@
 
 <!-- ===================== 体験レッスン ===================== -->
 <div id="page-experience" class="page">
-  <div class="page-header"><h1>体験レッスン</h1></div>
+  <div class="page-header"><div class="page-header-inner"><span class="page-header-en">Trial Lesson</span><h1>体験レッスン</h1></div></div>
   <div class="main-layout">
     <main class="page-content">
-      <h2>🎀 体験レッスンのご案内</h2>
-      <div class="card card-mint">
-        <p>岡田音楽教室では、随時体験レッスンを受け付けております。まずはお気軽にお越しください。入会を急かすようなことは一切ありませんのでご安心ください🌸</p>
+      <h2>体験レッスンのご案内</h2>
+      <div class="box box-accent reveal">
+        <p>岡田音楽教室では、随時体験レッスンを受け付けております。入会を急かすようなことは一切ありませんのでご安心ください。</p>
         <h3>体験レッスンの流れ</h3>
-        <ul class="cute-list">
+        <ul class="refined-list">
           <li>申込フォームまたはお電話でご予約</li>
           <li>当日：教室見学 → 体験レッスン（約30分）</li>
           <li>ご質問・ご相談（料金・スケジュールなど）</li>
-          <li>ご入会はご検討の上でOKです✨</li>
+          <li>ご入会はご検討の上でOKです</li>
         </ul>
       </div>
-      <h2>📝 申込フォーム</h2>
-      <div class="form-wrap">
-        <div class="form-row">
-          <label>お名前（保護者様）</label>
-          <input type="text" placeholder="例：岡田 花子">
-        </div>
-        <div class="form-row">
-          <label>お子様の名前・年齢</label>
-          <input type="text" placeholder="例：岡田 太郎・8歳">
-        </div>
-        <div class="form-row">
-          <label>ご希望コース</label>
-          <select>
-            <option>ピアノコース</option>
-            <option>リトミックコース</option>
-            <option>声楽コース</option>
-          </select>
-        </div>
-        <div class="form-row">
-          <label>ご希望日時（第1希望）</label>
-          <input type="text" placeholder="例：平日 夕方ごろ">
-        </div>
-        <div class="form-row">
-          <label>連絡先メールアドレス</label>
-          <input type="email" placeholder="example@email.com">
-        </div>
-        <div class="form-row">
-          <label>ご質問・備考</label>
-          <textarea rows="4" placeholder="気になることがあればお気軽にどうぞ🌸"></textarea>
-        </div>
-        <button class="form-submit" onclick="alert('送信機能は実装後に有効になります✨\nメールにてお問い合わせください。')">
-          🌸 送信する
-        </button>
+      <h2>申込フォーム</h2>
+      <div class="reveal">
+        <div class="form-row"><label>お名前（保護者様）</label><input type="text" placeholder="例：岡田 花子"></div>
+        <div class="form-row"><label>お子様の名前・年齢</label><input type="text" placeholder="例：岡田 太郎・8歳"></div>
+        <div class="form-row"><label>ご希望コース</label><select><option>ピアノコース</option><option>リトミックコース</option><option>声楽コース</option></select></div>
+        <div class="form-row"><label>ご希望日時</label><input type="text" placeholder="例：平日 夕方ごろ"></div>
+        <div class="form-row"><label>メールアドレス</label><input type="email" placeholder="example@email.com"></div>
+        <div class="form-row"><label>ご質問・備考</label><textarea rows="4"></textarea></div>
+        <button class="btn-submit" onclick="alert('送信機能は実装後に有効になります。')"><span>送　信</span></button>
       </div>
     </main>
     <aside class="sidebar">
-      <div class="widget"><div class="cta-area">
-        <a onclick="showPage('place')" class="btn-cta mint">📍 レッスン場所を見る</a>
-      </div></div>
+      <div class="widget"><div class="cta-area"><a onclick="showPage('place')" class="btn-cta btn-outline"><span>レッスン場所を見る</span></a></div></div>
     </aside>
   </div>
 </div>
 
 <!-- ===================== ブログ ===================== -->
 <div id="page-blog" class="page">
-  <div class="page-header"><h1>ブログ</h1></div>
+  <div class="page-header"><div class="page-header-inner"><span class="page-header-en">Blog</span><h1>ブログ</h1></div></div>
   <div class="main-layout">
     <main>
-      <div class="blog-item">
-        <div class="date">2026年3月10日 🌸</div>
-        <h3>兵庫県中学校作曲コンクール入賞しました！</h3>
-        <p>このたび、当教室の生徒が兵庫県中学校作曲コンクールにて入賞いたしました。日々のレッスンでの努力が実を結びました。おめでとうございます！✨</p>
+      <div class="blog-item reveal" onclick="showPage('blog')">
+        <div class="blog-date-col"><span class="blog-date-day">10</span><span class="blog-date-ym">2026.03</span></div>
+        <div class="blog-body"><h3>兵庫県中学校作曲コンクール入賞しました！</h3><p>当教室の生徒が兵庫県中学校作曲コンクールにて入賞いたしました。日々のレッスンでの努力が実を結びました。</p></div>
       </div>
-      <div class="blog-item">
-        <div class="date">2026年3月5日 🌸</div>
-        <h3>生徒が、県立西宮高校音楽科に合格しました！</h3>
-        <p>この春、当教室の生徒が県立西宮高校音楽科に見事合格しました。長年の努力の賜物です。高校でもさらに音楽の道を歩んでくれることを願っています🎹</p>
+      <div class="blog-item reveal" onclick="showPage('blog')">
+        <div class="blog-date-col"><span class="blog-date-day">05</span><span class="blog-date-ym">2026.03</span></div>
+        <div class="blog-body"><h3>生徒が、県立西宮高校音楽科に合格しました！</h3><p>この春、当教室の生徒が県立西宮高校音楽科に見事合格しました。長年の努力の賜物です。</p></div>
       </div>
-      <div class="blog-item">
-        <div class="date">2026年1月28日 ✨</div>
-        <h3>ショパンコンクールインアジア大会で入賞おめでとうございます。</h3>
-        <p>ショパンコンクールin ASIAのアジア大会にて、当教室の生徒が入賞いたしました。アジアレベルの舞台での素晴らしい演奏でした🎵</p>
+      <div class="blog-item reveal" onclick="showPage('blog')">
+        <div class="blog-date-col"><span class="blog-date-day">28</span><span class="blog-date-ym">2026.01</span></div>
+        <div class="blog-body"><h3>ショパンコンクールインアジア大会で入賞おめでとうございます。</h3><p>ショパンコンクールin ASIAのアジア大会にて、当教室の生徒が入賞いたしました。</p></div>
       </div>
-      <div class="blog-item">
-        <div class="date">2026年1月15日 ✨</div>
-        <h3>岡田音楽教室の生徒が、学年1位になり大学のコンチェルトのソリストに選ばれました！</h3>
-        <p>大学で学年1位の成績を収め、コンチェルトのソリストに選ばれました。幼少期からのレッスンが大きな花を咲かせました🌸</p>
+      <div class="blog-item reveal" onclick="showPage('blog')">
+        <div class="blog-date-col"><span class="blog-date-day">15</span><span class="blog-date-ym">2026.01</span></div>
+        <div class="blog-body"><h3>岡田音楽教室の生徒が、学年1位になり大学のコンチェルトのソリストに選ばれました！</h3><p>大学で学年1位の成績を収め、コンチェルトのソリストに選ばれました。</p></div>
       </div>
-      <div class="blog-item">
-        <div class="date">2025年12月22日 🎄</div>
-        <h3>バスティンコンクール金賞受賞おめでとうございます!</h3>
-        <p>バスティンコンクールにて金賞を受賞しました。クリスマス前の素晴らしいプレゼントになりましたね🏆</p>
+      <div class="blog-item reveal" onclick="showPage('blog')">
+        <div class="blog-date-col"><span class="blog-date-day">22</span><span class="blog-date-ym">2025.12</span></div>
+        <div class="blog-body"><h3>バスティンコンクール金賞受賞おめでとうございます!</h3><p>バスティンコンクールにて金賞を受賞しました。クリスマス前の素晴らしいプレゼントになりましたね。</p></div>
       </div>
     </main>
     <aside class="sidebar">
-      <div class="widget widget-mint">
-        <div class="widget-title widget-title-mint">📅 ブログカレンダー</div>
+      <div class="widget"><div class="widget-title">ブログカレンダー</div>
         <div class="widget-body">
-          <table class="calendar">
-            <caption>2026年3月</caption>
+          <table class="calendar"><caption>2026年3月</caption>
             <thead><tr><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th><th>日</th></tr></thead>
             <tbody>
               <tr><td></td><td></td><td></td><td></td><td></td><td></td><td>1</td></tr>
@@ -1227,9 +1241,8 @@
           </table>
         </div>
       </div>
-      <div class="widget">
-        <div class="widget-title">🏷️ カテゴリー</div>
-        <div class="widget-body"><a href="#">お知らせ (389)</a></div>
+      <div class="widget"><div class="widget-title">カテゴリー</div>
+        <div class="widget-body"><a onclick="showPage('blog')" style="font-size:.8rem; letter-spacing:.1em;">お知らせ (389)</a></div>
       </div>
     </aside>
   </div>
@@ -1237,37 +1250,74 @@
 
 <!-- ===== FOOTER ===== -->
 <footer>
-  <p>Copyright© 2020 岡田音楽教室 All Rights Reserved.</p>
+  <div class="footer-inner">
+    <div class="footer-logo-area">
+      <span class="footer-logo-en">Okada Music School</span>
+      <span style="font-family:'Noto Serif JP',serif; font-size:.72rem; letter-spacing:.2em; color:rgba(255,255,255,.3);">岡田音楽教室</span>
+    </div>
+    <div class="footer-rule"></div>
+    <nav class="footer-nav">
+      <a onclick="showPage('credo')">教室理念</a>
+      <a onclick="showPage('profile')">プロフィール</a>
+      <a onclick="showPage('piano')">ピアノコース</a>
+      <a onclick="showPage('rhythmics')">リトミック</a>
+      <a onclick="showPage('voice')">声楽</a>
+      <a onclick="showPage('place')">アクセス</a>
+      <a onclick="showPage('reviews')">生徒の声</a>
+      <a onclick="showPage('experience')">体験レッスン</a>
+    </nav>
+    <p class="footer-copy">Copyright © 2020 岡田音楽教室　All Rights Reserved.</p>
+  </div>
 </footer>
 
 <script>
+  // ===== PAGE NAV =====
   function showPage(id) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     const t = document.getElementById('page-' + id);
     if (t) { t.classList.add('active'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
     document.getElementById('main-nav').classList.remove('open');
+    // Re-trigger reveal for new page
+    setTimeout(initReveal, 60);
   }
 
+  // ===== HEADER SCROLL =====
+  const header = document.getElementById('site-header');
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 40);
+  }, { passive: true });
+
+  // ===== HAMBURGER =====
   document.getElementById('hamburger').addEventListener('click', () => {
     document.getElementById('main-nav').classList.toggle('open');
   });
-
   document.querySelectorAll('nav > ul > li > span').forEach(s => {
     s.addEventListener('click', () => {
-      if (window.innerWidth <= 780) s.parentElement.classList.toggle('open');
+      if (window.innerWidth <= 800) s.parentElement.classList.toggle('open');
     });
   });
 
-  // Hero slider
+  // ===== HERO SLIDER =====
   const slides = document.querySelectorAll('.hero-slide');
-  const dots = document.querySelectorAll('.hero-dot');
+  const dots   = document.querySelectorAll('.hero-dot');
   let cur = 0;
   function goTo(i) {
     slides[cur].classList.remove('active'); dots[cur].classList.remove('active');
     cur = i; slides[cur].classList.add('active'); dots[cur].classList.add('active');
   }
   dots.forEach(d => d.addEventListener('click', () => goTo(+d.dataset.idx)));
-  setInterval(() => goTo((cur + 1) % slides.length), 4000);
+  setInterval(() => goTo((cur + 1) % slides.length), 5500);
+
+  // ===== SCROLL REVEAL =====
+  function initReveal() {
+    const els = document.querySelectorAll('.page.active .reveal');
+    if (!els.length) return;
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    els.forEach(el => io.observe(el));
+  }
+  initReveal();
 </script>
 </body>
 </html>
