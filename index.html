@@ -49,12 +49,8 @@
     .page.active { display: block; }
 
     /* ===== SCROLL REVEAL ===== */
-    .reveal {
-      opacity: 0;
-      transform: translateY(28px);
-      transition: opacity .75s var(--ease), transform .75s var(--ease);
-    }
-    .reveal.visible {
+    /* アクティブなページのrevealは必ず表示 - JSのタイミングに依存しない */
+    .page.active .reveal {
       opacity: 1;
       transform: translateY(0);
     }
@@ -1278,10 +1274,6 @@
     if (t) {
       t.classList.add('active');
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      // すぐに全revealを表示（ページ内コンテンツがopacity:0のまま残るのを防ぐ）
-      setTimeout(() => {
-        t.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
-      }, 80);
     }
     document.getElementById('main-nav').classList.remove('open');
   }
@@ -1313,16 +1305,7 @@
   dots.forEach(d => d.addEventListener('click', () => goTo(+d.dataset.idx)));
   setInterval(() => goTo((cur + 1) % slides.length), 5500);
 
-  // ===== SCROLL REVEAL =====
-  function initReveal() {
-    const els = document.querySelectorAll('.page.active .reveal');
-    if (!els.length) return;
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
-    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-    els.forEach(el => io.observe(el));
-  }
-  initReveal();
+  // スクロールrevealはCSSで制御しているためJS不要
 </script>
 </body>
 </html>
