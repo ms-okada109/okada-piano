@@ -1275,10 +1275,15 @@
   function showPage(id) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     const t = document.getElementById('page-' + id);
-    if (t) { t.classList.add('active'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    if (t) {
+      t.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // すぐに全revealを表示（ページ内コンテンツがopacity:0のまま残るのを防ぐ）
+      setTimeout(() => {
+        t.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+      }, 80);
+    }
     document.getElementById('main-nav').classList.remove('open');
-    // Re-trigger reveal for new page
-    setTimeout(initReveal, 60);
   }
 
   // ===== HEADER SCROLL =====
